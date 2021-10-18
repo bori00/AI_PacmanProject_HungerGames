@@ -73,7 +73,7 @@ class SearchAgent(Agent):
     Note: You should NOT change any code in SearchAgent
     """
 
-    def __init__(self, fn='depthFirstSearch', prob='PositionSearchProblem', heuristic='nullHeuristic'):
+    def __init__(self, fn='depthFirstSearch', prob='PositionSearchProblem', heuristic='nullHeuristic', pacman_energy_level=10, food_energy_level=3):
         # Warning: some advanced Python magic is employed below to find the right functions and problems
 
         # Get the search function from the name and heuristic
@@ -100,6 +100,9 @@ class SearchAgent(Agent):
         self.searchType = globals()[prob]
         print('[SearchAgent] using problem type ' + prob)
 
+        self.pacmanEnergyLevel = int(pacman_energy_level)
+        self.foodEnergyLevel = int(food_energy_level)
+
     def registerInitialState(self, state):
         """
         This is the first time that the agent sees the layout of the game
@@ -111,7 +114,10 @@ class SearchAgent(Agent):
         """
         if self.searchFunction == None: raise Exception, "No search function provided for SearchAgent"
         starttime = time.time()
-        problem = self.searchType(state) # Makes a new search problem
+        if self.searchType == HungerGamesSearchProblem:
+            problem = self.searchType(state, self.pacmanEnergyLevel, self.foodEnergyLevel) # Makes a new search problem
+        else:
+            problem = self.searchType(state)
         self.actions  = self.searchFunction(problem) # Find a path
         totalCost = problem.getCostOfActions(self.actions)
         print('Path found with total cost of %d in %.1f seconds' % (totalCost, time.time() - starttime))
@@ -238,7 +244,7 @@ class HungerGamesSearchProblem(search.SearchProblem):
     Note: this search problem is fully specified; you should NOT change it.
     """
 
-    def __init__(self, gameState, pacmanEnergyLevel = 8, warn = True, visualize = True):
+    def __init__(self, gameState, pacman_energy_level = 10, warn = True, visualize = True, food_energy_level=3):
         """
         Stores the start and goal.
 
@@ -248,7 +254,8 @@ class HungerGamesSearchProblem(search.SearchProblem):
         TODO:update
         """
         self.walls = gameState.getWalls()
-        self.startState = (gameState.getPacmanPosition(), pacmanEnergyLevel, gameState.getFood())
+        self.startState = (gameState.getPacmanPosition(), pacman_energy_level, gameState.getFood())
+        self.foodEnergyLevel = food_energy_level
         self.mazeExitPosition = gameState.getMazeExitPosition()
         self.visualize = visualize
         if warn and (self.mazeExitPosition == ()):
@@ -297,7 +304,7 @@ class HungerGamesSearchProblem(search.SearchProblem):
                 next_energy_level = energy_level - 1
                 next_food_grid = food_grid.copy()
                 if next_food_grid[nextx][nexty]:
-                    next_energy_level += 2
+                    next_energy_level += self.foodEnergyLevel
                     next_food_grid[nextx][nexty] = False
                 if next_energy_level > 0:
                     # Else: invalid successor state, because PacMan would die because of hunger
