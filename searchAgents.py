@@ -199,7 +199,7 @@ class PositionSearchProblem(search.SearchProblem):
             nextx, nexty = int(x + dx), int(y + dy)
             if not self.walls[nextx][nexty]:
                 nextState = (nextx, nexty)
-                cost = self.costFn(nextState)
+                cost = 1
                 successors.append( ( nextState, action, cost) )
 
         # Bookkeeping for display purposes
@@ -224,6 +224,109 @@ class PositionSearchProblem(search.SearchProblem):
             x, y = int(x + dx), int(y + dy)
             if self.walls[x][y]: return 999999
             cost += self.costFn((x,y))
+        return cost
+
+class HungerGamesSearchProblem(search.SearchProblem):
+    """
+    TODO:update
+    A search problem defines the state space, start state, goal test, successor
+    function and cost function.  This search problem can be used to find paths
+    to a particular point on the pacman board.
+
+    The state space consists of (x,y) positions in a pacman game.
+
+    Note: this search problem is fully specified; you should NOT change it.
+    """
+
+    def __init__(self, gameState, pacmanEnergyLevel = 8, warn = True, visualize = True):
+        """
+        Stores the start and goal.
+
+        gameState: A GameState object (pacman.py)
+        costFn: A function from a search state (tuple) to a non-negative number
+        goal: A position in the gameState
+        TODO:update
+        """
+        self.walls = gameState.getWalls()
+        self.startState = (gameState.getPacmanPosition(), pacmanEnergyLevel, gameState.getFood())
+        self.mazeExitPosition = gameState.getMazeExitPosition()
+        self.visualize = visualize
+        if warn and (self.mazeExitPosition == ()):
+            print 'Warning: this does not look like a regular hunger games search maze'
+
+        # For display purposes
+        self._visited, self._visitedlist, self._expanded = {}, [], 0 # DO NOT CHANGE
+
+    def getStartState(self):
+        return self.startState
+
+    def isGoalState(self, state):
+        isGoal = state[0] == self.mazeExitPosition
+
+        # For display purposes only
+        if isGoal and self.visualize:
+            self._visitedlist.append(state[0])
+            import __main__
+            if '_display' in dir(__main__):
+                if 'drawExpandedCells' in dir(__main__._display): #@UndefinedVariable
+                    __main__._display.drawExpandedCells(self._visitedlist) #@UndefinedVariable
+
+        return isGoal
+
+    def getSuccessors(self, state):
+        """
+        Returns successor states, the actions they require, and a cost of 1.
+
+         As noted in search.py:
+             For a given state, this should return a list of triples,
+         (successor, action, stepCost), where 'successor' is a
+         successor to the current state, 'action' is the action
+         required to get there, and 'stepCost' is the incremental
+         cost of expanding to that successor
+        """
+
+        successors = []
+        x, y = state[0]
+        food_grid = state[2]
+        energy_level = state[1]
+
+        for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            if not self.walls[nextx][nexty]:
+                next_energy_level = energy_level - 1
+                next_food_grid = food_grid.copy()
+                if next_food_grid[nextx][nexty]:
+                    next_energy_level += 2
+                    next_food_grid[nextx][nexty] = False
+                if next_energy_level > 0:
+                    # Else: invalid successor state, because PacMan would die because of hunger
+                    next_state = ((nextx, nexty), next_energy_level, next_food_grid)
+                    cost = 1
+                    successors.append((next_state, action, cost))
+
+        # Bookkeeping for display purposes
+        self._expanded += 1 # DO NOT CHANGE
+        if state not in self._visited:
+            self._visited[state] = True
+            self._visitedlist.append(state[0])
+
+        return successors
+
+    def getCostOfActions(self, actions):
+        """
+        Returns the cost of a particular sequence of actions. If those actions
+        include an illegal move, return 999999.
+        """
+        if actions == None: return 999999
+        x,y= self.getStartState()[0]
+        cost = 0
+        for action in actions:
+            # Check figure out the next state and see whether its' legal
+            dx, dy = Actions.directionToVector(action)
+            x, y = int(x + dx), int(y + dy)
+            if self.walls[x][y]: return 999999
+            cost += 1
         return cost
 
 class StayEastSearchAgent(SearchAgent):
