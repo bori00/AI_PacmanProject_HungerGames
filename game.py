@@ -4,7 +4,7 @@
 # educational purposes provided that (1) you do not distribute or publish
 # solutions, (2) you retain this notice, and (3) you provide clear
 # attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
-# 
+#
 # Attribution Information: The Pacman AI projects were developed at UC Berkeley.
 # The core projects and autograders were primarily created by John DeNero
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
@@ -383,6 +383,9 @@ class GameStateData:
             self.layout = prevState.layout
             self._eaten = prevState._eaten
             self.score = prevState.score
+            self.energyLevel = prevState.energyLevel
+            self.initialEnergyLevel = prevState.initialEnergyLevel
+            self.foodEnergyLevel = prevState.foodEnergyLevel
 
         self._foodEaten = None
         self._foodAdded = None
@@ -396,6 +399,9 @@ class GameStateData:
         state = GameStateData( self )
         state.food = self.food.deepCopy()
         state.layout = self.layout.deepCopy()
+        state.energyLevel = self.energyLevel
+        state.initialEnergyLevel = self.initialEnergyLevel
+        state.foodEnergyLevel = self.foodEnergyLevel
         state._agentMoved = self._agentMoved
         state._foodEaten = self._foodEaten
         state._foodAdded = self._foodAdded
@@ -418,6 +424,8 @@ class GameStateData:
         if not self.food == other.food: return False
         if not self.capsules == other.capsules: return False
         if not self.score == other.score: return False
+        if not self.energyLevel == other.energyLevel: return False
+        if not self.foodEnergyLevel == other.foodEnergyLevel: return False
         return True
 
     def __hash__( self ):
@@ -494,6 +502,9 @@ class GameStateData:
         self.layout = layout
         self.score = 0
         self.scoreChange = 0
+        self.initialEnergyLevel = 0
+        self.energyLevel = 0
+        self.foodEnergyLevel = 0
 
         self.agentStates = []
         numGhosts = 0
@@ -604,7 +615,7 @@ class Game:
                         self.unmute()
                         return
                 else:
-                    agent.registerInitialState(self.state.deepCopy())
+                    agent.registerInitialState(self.state)
                 ## TODO: could this exceed the total time
                 self.unmute()
 

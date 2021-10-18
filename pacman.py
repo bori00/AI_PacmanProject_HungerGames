@@ -4,7 +4,7 @@
 # educational purposes provided that (1) you do not distribute or publish
 # solutions, (2) you retain this notice, and (3) you provide clear
 # attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
-# 
+#
 # Attribution Information: The Pacman AI projects were developed at UC Berkeley.
 # The core projects and autograders were primarily created by John DeNero
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
@@ -359,6 +359,9 @@ class PacmanRules:
         vector = Actions.directionToVector(action, PacmanRules.PACMAN_SPEED)
         pacmanState.configuration = pacmanState.configuration.generateSuccessor(vector)
 
+        # Decrement energy after every move (action)
+        state.data.energyLevel -= 1
+
         # Eat
         next = pacmanState.configuration.getPosition()
         nearest = nearestPoint(next)
@@ -373,6 +376,7 @@ class PacmanRules:
         # Eat food
         if state.data.food[x][y]:
             state.data.scoreChange += 10
+            state.data.energyLevel += state.data.foodEnergyLevel
             state.data.food = state.data.food.copy()
             state.data.food[x][y] = False
             state.data._foodEaten = position
