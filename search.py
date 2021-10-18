@@ -19,6 +19,7 @@ Pacman agents (in searchAgents.py).
 
 import util
 
+
 class SearchProblem:
     """
     This class outlines the structure of a search problem, but doesn't implement
@@ -70,7 +71,8 @@ def tinyMazeSearch(problem):
     from game import Directions
     s = Directions.SOUTH
     w = Directions.WEST
-    return  [s, s, w, s, w, w, s, w]
+    return [s, s, w, s, w, w, s, w]
+
 
 def depthFirstSearch(problem):
     """
@@ -89,15 +91,18 @@ def depthFirstSearch(problem):
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
 
+
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
 
+
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
+
 
 def nullHeuristic(state, problem=None):
     """
@@ -106,10 +111,62 @@ def nullHeuristic(state, problem=None):
     """
     return 0
 
+
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    from util import PriorityQueue
+    from game import Directions
+    # The next state to be expanded
+    curr_state = problem.getStartState()
+    # The collection of states to which an existing path from the initial state is known.
+    # The cost of each state, by which the priority queue is ordered, is the minimum known cost to reach the state from the initial state.
+    frontier = PriorityQueue()
+    # The set of states for which the least expensive path form the initial state to them was already found
+    finished_states = {curr_state}
+    # Just a notation used for the parent of the initial state, marking that the initial state has no parent state.
+    root_state = (-1)
+    # A dictionary, which for a key state gives as a value a tuple, in which
+    # - the first element is the parent state through which the key state was reached such that the total cost of the pah from the initial state was minimal,
+    # - the second element gives the action taken from this parent state to reach the key state
+    # - third element is the total path cost from the parent state to the key state.
+    parent_state_and_g_cost_dict = {curr_state: (root_state, Directions.STOP, 0)}
+
+    while not problem.isGoalState(curr_state):
+        finished_states.add(curr_state)
+        possible_successor_states_data = problem.getSuccessors(curr_state)
+        curr_state_g_cost = parent_state_and_g_cost_dict[curr_state][2]
+        for possible_successor_state_data in possible_successor_states_data:
+            if possible_successor_state_data[0] not in finished_states:
+                possible_successor_state = possible_successor_state_data[0]
+                action_to_possible_successor_state = possible_successor_state_data[1]
+                cost_curr_state_successor_state = possible_successor_state_data[2]
+                # Compute the estimated cost of a path through the possible successor state
+                f_cost = curr_state_g_cost + cost_curr_state_successor_state + heuristic(possible_successor_state,
+                                                                                         problem)
+                # Update the estimated path cost through the possible successor state in the frontier
+                frontier.update(possible_successor_state, f_cost)
+                # If the previously best known cost from the initial state to the possible successor state is larger than
+                # the newly found cost, then update the cost in the dictionary
+                if possible_successor_state not in parent_state_and_g_cost_dict or \
+                        parent_state_and_g_cost_dict[possible_successor_state][
+                            2] > curr_state_g_cost + cost_curr_state_successor_state:
+                    parent_state_and_g_cost_dict[possible_successor_state] = (
+                        curr_state, action_to_possible_successor_state,
+                        curr_state_g_cost + cost_curr_state_successor_state)
+        if frontier.isEmpty():
+            # No solution exists
+            return []
+        # Expand the node with the best estimated cost next
+        curr_state = frontier.pop()
+
+    # Reconstruct the list of steps to be taken from the initial state to the minimum cost goal state
+    # from the parent array constructed while searching.
+    step_list = []
+    while parent_state_and_g_cost_dict[curr_state][0] is not root_state:
+        step_list.insert(0, parent_state_and_g_cost_dict[curr_state][1])
+        curr_state = parent_state_and_g_cost_dict[curr_state][0]
+
+    return step_list
 
 
 # Abbreviations
