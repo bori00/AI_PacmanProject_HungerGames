@@ -32,6 +32,7 @@ class Layout:
         self.capsules = []
         self.agentPositions = []
         self.numGhosts = 0
+        self.mazeExit = ()
         self.processLayoutText(layoutText)
         self.layoutText = layoutText
         self.totalFood = len(self.food.asList())
@@ -125,6 +126,10 @@ class Layout:
         elif layoutChar in ['G']:
             self.agentPositions.append( (1, (x, y) ) )
             self.numGhosts += 1
+        elif layoutChar in ['E']:
+            self.mazeExit = (x, y)
+            # Game end is detected only if there is a food on the last position, in the current framework
+            self.food[x][y] = True
         elif layoutChar in  ['1', '2', '3', '4']:
             self.agentPositions.append( (int(layoutChar), (x,y)))
             self.numGhosts += 1
