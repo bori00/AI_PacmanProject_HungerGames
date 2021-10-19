@@ -383,7 +383,7 @@ class GameStateData:
             self.layout = prevState.layout
             self._eaten = prevState._eaten
             self.score = prevState.score
-            self.energyLevel = prevState.energyLevel
+            self.pacmanEnergyLevel = prevState.pacmanEnergyLevel
             self.initialEnergyLevel = prevState.initialEnergyLevel
             self.foodEnergyLevel = prevState.foodEnergyLevel
 
@@ -399,7 +399,7 @@ class GameStateData:
         state = GameStateData( self )
         state.food = self.food.deepCopy()
         state.layout = self.layout.deepCopy()
-        state.energyLevel = self.energyLevel
+        state.pacmanEnergyLevel = self.pacmanEnergyLevel
         state.initialEnergyLevel = self.initialEnergyLevel
         state.foodEnergyLevel = self.foodEnergyLevel
         state._agentMoved = self._agentMoved
@@ -424,7 +424,7 @@ class GameStateData:
         if not self.food == other.food: return False
         if not self.capsules == other.capsules: return False
         if not self.score == other.score: return False
-        if not self.energyLevel == other.energyLevel: return False
+        if not self.pacmanEnergyLevel == other.pacmanEnergyLevel: return False
         if not self.foodEnergyLevel == other.foodEnergyLevel: return False
         return True
 
@@ -492,7 +492,7 @@ class GameStateData:
             return '3'
         return 'E'
 
-    def initialize( self, layout, numGhostAgents ):
+    def initialize( self, layout, numGhostAgents , pacmanEnergyLevel, foodEnergyLevel):
         """
         Creates an initial game state from a layout array (see layout.py).
         """
@@ -502,9 +502,9 @@ class GameStateData:
         self.layout = layout
         self.score = 0
         self.scoreChange = 0
-        self.initialEnergyLevel = 0
-        self.energyLevel = 0
-        self.foodEnergyLevel = 0
+        self.initialEnergyLevel = pacmanEnergyLevel
+        self.pacmanEnergyLevel = pacmanEnergyLevel
+        self.foodEnergyLevel = foodEnergyLevel
 
         self.agentStates = []
         numGhosts = 0

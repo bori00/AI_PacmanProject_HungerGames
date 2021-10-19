@@ -238,7 +238,7 @@ class PacmanGraphics:
         self.width = layout.width
         self.height = layout.height
         self.make_window(self.width, self.height)
-        self.infoPane = InfoPane(layout, self.gridSize, state.energyLevel)
+        self.infoPane = InfoPane(layout, self.gridSize, state.pacmanEnergyLevel)
         self.currentState = layout
 
     def drawDistributions(self, state):
@@ -305,7 +305,7 @@ class PacmanGraphics:
             self.removeFood(newState._foodEaten, self.food)
         if newState._capsuleEaten != None:
             self.removeCapsule(newState._capsuleEaten, self.capsules)
-        self.infoPane.updateEnergyLevel(newState.energyLevel, newState.initialEnergyLevel)
+        self.infoPane.updateEnergyLevel(newState.pacmanEnergyLevel, newState.initialEnergyLevel)
         if 'ghostDistances' in dir(newState):
             self.infoPane.updateGhostDistances(newState.ghostDistances)
 

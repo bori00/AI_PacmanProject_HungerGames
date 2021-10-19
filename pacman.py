@@ -253,11 +253,11 @@ class GameState:
 
         return str(self.data)
 
-    def initialize(self, layout, numGhostAgents=1000):
+    def initialize(self, layout, pacmanEnergyLevel, foodEnergyLevel,numGhostAgents=1000,):
         """
         Creates an initial game state from a layout array (see layout.py).
         """
-        self.data.initialize(layout, numGhostAgents)
+        self.data.initialize(layout, numGhostAgents, pacmanEnergyLevel, foodEnergyLevel)
 
 
 ############################################################################
@@ -280,10 +280,10 @@ class ClassicGameRules:
     def __init__(self, timeout=30):
         self.timeout = timeout
 
-    def newGame(self, layout, pacmanAgent, ghostAgents, display, quiet=False, catchExceptions=False):
+    def newGame(self, layout, pacmanAgent, ghostAgents, pacmanEnergyLevel, foodEnergyLevel, display, quiet=False, catchExceptions=False):
         agents = [pacmanAgent] + ghostAgents[:layout.getNumGhosts()]
         initState = GameState()
-        initState.initialize(layout, len(ghostAgents))
+        initState.initialize(layout, pacmanEnergyLevel= pacmanEnergyLevel, foodEnergyLevel=foodEnergyLevel,numGhostAgents=len(ghostAgents),)
         game = Game(agents, display, self, catchExceptions=catchExceptions)
         game.state = initState
         self.initialState = initState.deepCopy()
@@ -360,7 +360,7 @@ class PacmanRules:
         pacmanState.configuration = pacmanState.configuration.generateSuccessor(vector)
 
         # Decrement energy after every move (action)
-        state.data.energyLevel -= 1
+        state.data.pacmanEnergyLevel -= 1
 
         # Eat
         next = pacmanState.configuration.getPosition()
@@ -376,7 +376,7 @@ class PacmanRules:
         # Eat food
         if state.data.food[x][y]:
             state.data.scoreChange += 10
-            state.data.energyLevel += state.data.foodEnergyLevel
+            state.data.pacmanEnergyLevel += state.data.foodEnergyLevel
             state.data.food = state.data.food.copy()
             state.data.food[x][y] = False
             state.data._foodEaten = position
@@ -577,6 +577,10 @@ def readCommand(argv):
     if options.numTraining > 0:
         args['numTraining'] = options.numTraining
         if 'numTraining' not in agentOpts: agentOpts['numTraining'] = options.numTraining
+    if 'prob' in agentOpts and agentOpts['prob'] == 'HungerGamesSearchProblem':
+        args['pacmanEnergyLevel'] = agentOpts['pacman_energy_level']
+        args['foodEnergyLevel'] = agentOpts['food_energy_level']
+
     pacman = pacmanType(**agentOpts)  # Instantiate Pacman with agentArgs
     args['pacman'] = pacman
 
@@ -664,7 +668,7 @@ def replayGame(layout, actions, display):
     display.finish()
 
 
-def runGames(layout, pacman, ghosts, display, numGames, record, numTraining=0, catchExceptions=False, timeout=30):
+def runGames(layout, pacman, ghosts, display, numGames, record, pacmanEnergyLevel, foodEnergyLevel, numTraining=0, catchExceptions=False, timeout=30):
     import __main__
     __main__.__dict__['_display'] = display
 
@@ -681,7 +685,7 @@ def runGames(layout, pacman, ghosts, display, numGames, record, numTraining=0, c
         else:
             gameDisplay = display
             rules.quiet = False
-        game = rules.newGame(layout, pacman, ghosts, gameDisplay, beQuiet, catchExceptions)
+        game = rules.newGame(layout, pacmanAgent=pacman, ghostAgents=ghosts, display=gameDisplay, quiet=beQuiet, catchExceptions=catchExceptions, pacmanEnergyLevel=pacmanEnergyLevel, foodEnergyLevel=foodEnergyLevel)
         game.run()
         if not beQuiet: games.append(game)
 
