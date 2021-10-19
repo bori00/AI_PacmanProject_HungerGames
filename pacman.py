@@ -583,9 +583,9 @@ def readCommand(argv):
         if 'numTraining' not in agentOpts: agentOpts['numTraining'] = options.numTraining
     if 'prob' in agentOpts and agentOpts['prob'] == 'HungerGamesSearchProblem':
         if 'pacman_energy_level' in agentOpts:
-            args['pacmanEnergyLevel'] = agentOpts['pacman_energy_level']
+            args['pacmanEnergyLevel'] = int(agentOpts['pacman_energy_level'])
         if 'food_energy_level' in agentOpts:
-            args['foodEnergyLevel'] = agentOpts['food_energy_level']
+            args['foodEnergyLevel'] = int(agentOpts['food_energy_level'])
 
     pacman = pacmanType(**agentOpts)  # Instantiate Pacman with agentArgs
     args['pacman'] = pacman

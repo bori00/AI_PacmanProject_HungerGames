@@ -424,6 +424,7 @@ class GameStateData:
         if not self.food == other.food: return False
         if not self.capsules == other.capsules: return False
         if not self.score == other.score: return False
+        if not self.initialEnergyLevel == other.initialnergyLevel: return False
         if not self.pacmanEnergyLevel == other.pacmanEnergyLevel: return False
         if not self.foodEnergyLevel == other.foodEnergyLevel: return False
         return True
@@ -615,7 +616,7 @@ class Game:
                         self.unmute()
                         return
                 else:
-                    agent.registerInitialState(self.state)
+                    agent.registerInitialState(self.state.deepCopy())
                 ## TODO: could this exceed the total time
                 self.unmute()
 
