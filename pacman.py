@@ -53,6 +53,10 @@ import sys, types, time, random, os
 # YOUR INTERFACE TO THE PACMAN WORLD: A GameState #
 ###################################################
 
+
+DEFAULT_INITIAL_PACMAN_ENERGY_LEVEL = 10
+DEFAULT_FOOD_ENERGY_LEVEL = 3
+
 class GameState:
     """
     A GameState specifies the full game state, including the food, capsules,
@@ -578,8 +582,8 @@ def readCommand(argv):
         args['numTraining'] = options.numTraining
         if 'numTraining' not in agentOpts: agentOpts['numTraining'] = options.numTraining
     if 'prob' in agentOpts and agentOpts['prob'] == 'HungerGamesSearchProblem':
-        args['pacmanEnergyLevel'] = agentOpts['pacman_energy_level']
-        args['foodEnergyLevel'] = agentOpts['food_energy_level']
+        args['pacmanEnergyLevel'] = agentOpts['pacman_energy_level'] if 'pacman_energy_level' in agentOpts else DEFAULT_INITIAL_PACMAN_ENERGY_LEVEL
+        args['foodEnergyLevel'] = agentOpts['food_energy_level'] if 'food_energy_level' in agentOpts else DEFAULT_FOOD_ENERGY_LEVEL
 
     pacman = pacmanType(**agentOpts)  # Instantiate Pacman with agentArgs
     args['pacman'] = pacman
