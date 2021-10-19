@@ -127,7 +127,7 @@ class SearchAgent(Agent):
         print('Path found with total cost of %d in %.1f seconds' % (totalCost, time.time() - starttime))
         if '_expanded' in dir(problem): print('Search nodes expanded: %d' % problem._expanded)
 
-        state.data.energyLevel = self.pacmanEnergyLevel
+        state.data.pacmanEnergyLevel = self.pacmanEnergyLevel
         state.data.initialEnergyLevel = self.pacmanEnergyLevel
         state.data.foodEnergyLevel = self.foodEnergyLevel
 
