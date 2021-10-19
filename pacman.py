@@ -582,8 +582,10 @@ def readCommand(argv):
         args['numTraining'] = options.numTraining
         if 'numTraining' not in agentOpts: agentOpts['numTraining'] = options.numTraining
     if 'prob' in agentOpts and agentOpts['prob'] == 'HungerGamesSearchProblem':
-        args['pacmanEnergyLevel'] = agentOpts['pacman_energy_level'] if 'pacman_energy_level' in agentOpts else DEFAULT_INITIAL_PACMAN_ENERGY_LEVEL
-        args['foodEnergyLevel'] = agentOpts['food_energy_level'] if 'food_energy_level' in agentOpts else DEFAULT_FOOD_ENERGY_LEVEL
+        if 'pacman_energy_level' in agentOpts:
+            args['pacmanEnergyLevel'] = agentOpts['pacman_energy_level']
+        if 'food_energy_level' in agentOpts:
+            args['foodEnergyLevel'] = agentOpts['food_energy_level']
 
     pacman = pacmanType(**agentOpts)  # Instantiate Pacman with agentArgs
     args['pacman'] = pacman
@@ -672,7 +674,7 @@ def replayGame(layout, actions, display):
     display.finish()
 
 
-def runGames(layout, pacman, ghosts, display, numGames, record, pacmanEnergyLevel, foodEnergyLevel, numTraining=0, catchExceptions=False, timeout=30):
+def runGames(layout, pacman, ghosts, display, numGames, record, pacmanEnergyLevel=DEFAULT_INITIAL_PACMAN_ENERGY_LEVEL, foodEnergyLevel=DEFAULT_FOOD_ENERGY_LEVEL, numTraining=0, catchExceptions=False, timeout=30):
     import __main__
     __main__.__dict__['_display'] = display
 
