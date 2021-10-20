@@ -353,6 +353,15 @@ class HungerGamesSearchProblem(search.SearchProblem):
             cost += 1
         return cost
 
+def hungerGamesEuclideanHeuristic(state, problem):
+    curr_pos = state[0]
+    goal = problem.mazeExitPosition
+    return ((curr_pos[0] - goal[0]) ** 2 + (curr_pos[1] - goal[1]) ** 2) ** 0.5
+
+def hungerGamesManhattanHeuristic(state, problem):
+    curr_pos = state[0]
+    goal = problem.mazeExitPosition
+    return abs(curr_pos[0] - goal[0]) + abs (curr_pos[1] - goal[1])
 
 class StayEastSearchAgent(SearchAgent):
     """
