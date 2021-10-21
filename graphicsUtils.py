@@ -4,7 +4,7 @@
 # educational purposes provided that (1) you do not distribute or publish
 # solutions, (2) you retain this notice, and (3) you provide clear
 # attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
-# 
+#
 # Attribution Information: The Pacman AI projects were developed at UC Berkeley.
 # The core projects and autograders were primarily created by John DeNero
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
@@ -178,6 +178,11 @@ def square(pos, r, color, filled=1, behind=0):
     x, y = pos
     coords = [(x - r, y - r), (x + r, y - r), (x + r, y + r), (x - r, y + r)]
     return polygon(coords, color, color, filled, 0, behind=behind)
+
+def rectangle(pos, rx, ry, outlineColor, fillColor, filled=1, behind=0, width = 1):
+    x, y = pos
+    coords = [(x - rx, y - ry), (x + rx, y - ry), (x + rx, y + ry), (x - rx, y + ry)]
+    return polygon(coords, outlineColor, fillColor, filled, 0, behind=behind, width=width)
 
 def circle(pos, r, outlineColor, fillColor, endpoints=None, style='pieslice', width=2):
     x, y = pos

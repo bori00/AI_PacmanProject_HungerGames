@@ -4,7 +4,7 @@
 # educational purposes provided that (1) you do not distribute or publish
 # solutions, (2) you retain this notice, and (3) you provide clear
 # attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
-# 
+#
 # Attribution Information: The Pacman AI projects were developed at UC Berkeley.
 # The core projects and autograders were primarily created by John DeNero
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
@@ -255,6 +255,8 @@ class HungerGamesSearchProblem(search.SearchProblem):
     - food_grid is a grid showing whether a cell of the maze has any food on it.
     """
 
+    IMPOSSIBLE_TO_SOLVE_STATE_HEURISTIC_VALUE = 1000000
+
     def __init__(self, game_state, pacman_energy_level=10, food_energy_level=3, warn=True, visualize=True):
         """
         Stores the start and goal.
@@ -428,6 +430,7 @@ def hungerGamesManhattan2MaxFoodOnShortestPathHeuristic(state, problem):
         # Possibly enough food on the shortest path
         return shortest_path_length
 
+
 def buildMaxEnergyLevelGrid(init_energy_level, food_grid, food_energy_level):
     from copy import deepcopy
     max_energy_level_grid = deepcopy(food_grid)
@@ -478,72 +481,218 @@ def hungerGamesManhattan2ShortestPathVerificationHeuristic(state, problem):
         # Possibly enough food on the shortest path
         return shortest_path_length
 
+
 def buildMinEnergyLevelGrid(food_grid, food_energy_level):
+    # assumes minimum 3 rows and 3 columns in the grid
     no_rows = len(food_grid)
     no_cols = len(food_grid[0])
-    min_energy_level_grid = [[-1] * no_cols] * no_rows
-    min_energy_level_grid[no_rows-1][no_cols-1] = 0
+    from copy import deepcopy
+    min_energy_level_grid = deepcopy(food_grid)
+    min_energy_level_grid[no_rows - 1][no_cols - 1] = 0
+    min_energy_level_grid[no_rows - 2][no_cols - 2] = 0
 
-    for j in range(no_cols - 2, 0, -1):
-        min_energy_level_grid[no_rows - 1][j] = max(0, min_energy_level_grid[no_rows - 1][j + 1] - food_energy_level * food_grid[no_rows - 1][j] + 1)
+    for j in range(no_cols - 2, -1, -1):
+        min_energy_level_grid[no_rows - 1][j] = max(0, min_energy_level_grid[no_rows - 1][j + 1] - food_energy_level *
+                                                    food_grid[no_rows - 1][j] + 1)
 
-    for i in range(no_rows - 2, 0, -1):
-        min_energy_level_grid[i][no_cols - 1] = max(0, min_energy_level_grid[i + 1][no_cols - 1] - food_energy_level * food_grid[i][no_cols - 1] + 1)
+    for j in range(no_cols - 3, -1, -1):
+        min_child_energy_level = min(min_energy_level_grid[no_rows - 2][j + 1], min_energy_level_grid[no_rows - 1][j])
+        min_energy_level_grid[no_rows - 2][j] = max(0,
+                                                    min_child_energy_level - food_energy_level * food_grid[no_rows - 2][
+                                                        j] + 1)
 
-    for i in range(no_rows - 2, 0, -1):
-        for j in range(no_cols - 2, 0, -1):
+    for i in range(no_rows - 2, -1, -1):
+        min_energy_level_grid[i][no_cols - 1] = max(0, min_energy_level_grid[i + 1][no_cols - 1] - food_energy_level *
+                                                    food_grid[i][no_cols - 1] + 1)
+
+    for i in range(no_rows - 3, -1, -1):
+        min_child_energy_level = min(min_energy_level_grid[i + 1][no_cols - 2], min_energy_level_grid[i][no_cols - 1])
+        min_energy_level_grid[i][no_cols - 2] = max(0, min_child_energy_level - food_energy_level * food_grid[i][
+            no_cols - 2] + 1)
+
+    for i in range(no_rows - 3, -1, -1):
+        for j in range(no_cols - 3, -1, -1):
             min_child_energy_level = min(min_energy_level_grid[i][j + 1], min_energy_level_grid[i + 1][j])
             min_energy_level_grid[i][j] = max(0, min_child_energy_level - food_energy_level * food_grid[i][j] + 1)
 
     return min_energy_level_grid
 
-# def hungerGamesManhattan2ShortestPathWith1OutsideStepVerificationHeuristic(state, problem):
-#     curr_pos = state[0]
-#     energy_level = state[1]
-#     food_grid = state[2]
-#     goal = problem.mazeExitPosition
-#
-#     goal_oriented_food_grid = buildGoalOrientedIntegerFoodGridRectangle(curr_pos, goal, food_grid)
-#
-#     extended_curr_pos = curr_pos
-#     if goal[0] < extended_curr_pos[0]:
-#         if extended_curr_pos[0] < len(food_grid):
-#             extended_curr_pos[0] = extended_curr_pos[0] + 1
-#     else:
-#         if extended_curr_pos[0] > 0:
-#             extended_curr_pos[0] = extended_curr_pos[0] - 1
-#     if goal[1] < extended_curr_pos[1]:
-#         if extended_curr_pos[1] < len(food_grid[0]):
-#             extended_curr_pos[1] = extended_curr_pos[1] + 1
-#     else:
-#         if extended_curr_pos[1] > 0:
-#             extended_curr_pos[1] = extended_curr_pos[1] - 1
-#
-#     extended_at_start_goal_oriented_food_grid = buildGoalOrientedIntegerFoodGridRectangle(extended_curr_pos, goal, food_grid)
-#
-#     max_energy_level_grid = buildMaxEnergyLevelGrid(energy_level, goal_oriented_food_grid, problem.foodEnergyLevel)
-#
-#     # extend max_energy_level matrix with 0s
-#     max_energy_level_grid.insert(0, [0 for i in range (len(max_energy_level_grid[0]))])
-#     for row in max_energy_level_grid:
-#         row.insert(0, 0)
-#
-#     min_energy_level_grid = buildMinEnergyLevelGrid( extended_at_start_goal_oriented_food_grid, problem.foodEnergyLevel)
-#
-#     shortest_path_length = manhattanDistance(curr_pos, goal)
-#
-#     for j in range(len(min_energy_level_grid[0])):
-#         if min_energy_level_grid[0][j] + 1 <= max_energy_level_grid[1][j]:
-#             return shortest_path_length + 2
-#
-#     for i in range(len(min_energy_level_grid)):
-#         if min_energy_level_grid[i][0] + 1 <= max_energy_level_grid[i][1]:
-#             return shortest_path_length + 2
-#
-#     for i in range(1, len(min_energy_level_grid)):
-#         for j in range(1, len(min_energy_level_grid[0])):
-#             if min_energy_level_grid[i][j] + 1 <= max_energy_level_grid
 
+def extendMatrixWith0sOnAllSides(m):
+    m.insert(0, [0 for i in range(len(m[0]))])
+    m.append([0 for i in range(len(m[0]))])
+    for row in m:
+        row.insert(0, 0)
+        row.append(0)
+    return m
+
+
+def extendRectangeCornersInEachDirection(corner1, corner2):
+    x1, y1 = corner1
+    x2, y2 = corner2
+
+    if x2 < x1:
+        x1 = x1 + 1
+        x2 = x2 - 1
+    else:
+        x1 = x1 - 1
+        x2 = x2 + 1
+    if y2 < y1:
+        y1 = y1 + 1
+        y2 = y2 - 1
+    else:
+        y1 = y1 - 1
+        y2 = y2 + 1
+
+    return (x1, y1), (x2, y2)
+
+
+def hungerGamesManhattan2ShortestPathWith1OutsideStepVerificationHeuristic(state, problem):
+    curr_pos = state[0]
+    energy_level = state[1]
+    food_grid = state[2]
+    goal = problem.mazeExitPosition
+
+    goal_oriented_food_grid = buildGoalOrientedIntegerFoodGridRectangle(curr_pos, goal, food_grid)
+
+    max_energy_level_grid = buildMaxEnergyLevelGrid(energy_level, goal_oriented_food_grid, problem.foodEnergyLevel)
+
+    shortest_path_length = manhattanDistance(curr_pos, goal)
+
+    if max_energy_level_grid[len(max_energy_level_grid) - 1][len(max_energy_level_grid[0]) - 1] < 0:
+        # Not enough food on the shortest path. Try with 1 step to a wrong direction
+        extended_curr_pos, extended_goal_pos = extendRectangeCornersInEachDirection(curr_pos, goal)
+
+        extended_goal_oriented_food_grid = buildGoalOrientedIntegerFoodGridRectangle(extended_curr_pos,
+                                                                                     extended_goal_pos,
+                                                                                     food_grid)
+        # extend max_energy_level matrix with 0s
+        max_energy_level_grid = extendMatrixWith0sOnAllSides(max_energy_level_grid)
+
+        min_energy_level_grid = buildMinEnergyLevelGrid(extended_goal_oriented_food_grid, problem.foodEnergyLevel)
+
+        extended_no_rows = len(max_energy_level_grid)
+        extended_no_cols = len(max_energy_level_grid[0])
+
+        for j in range(1, extended_no_cols - 1):
+            if min_energy_level_grid[0][j] + 1 <= max_energy_level_grid[1][j]:
+                return shortest_path_length + 2
+
+        for j in range(1, extended_no_cols - 2):
+            if min_energy_level_grid[extended_no_rows - 1][j] + 1 <= max_energy_level_grid[extended_no_rows - 2][j]:
+                return shortest_path_length + 2
+
+        for i in range(1, extended_no_rows - 1):
+            if min_energy_level_grid[i][0] + 1 <= max_energy_level_grid[i][1]:
+                return shortest_path_length + 2
+
+        for i in range(1, extended_no_rows - 2):
+            if min_energy_level_grid[i][extended_no_cols - 1] + 1 <= max_energy_level_grid[i][extended_no_cols - 2]:
+                return shortest_path_length + 2
+
+        for i in range(1, extended_no_rows - 1):
+            for j in range(1, extended_no_cols - 1):
+                if min_energy_level_grid[i][j] + 1 <= max_energy_level_grid[i + 1][j]:
+                    return shortest_path_length + 2
+                if min_energy_level_grid[i][j] + 1 <= max_energy_level_grid[i][j + 1]:
+                    return shortest_path_length + 2
+
+        return shortest_path_length + 4
+    else:
+        # Possibly enough food on the shortest path
+        return shortest_path_length
+
+
+def hungerGamesStepsOutsideRectangleHeuristic(state, problem=None):
+    (curr_position, curr_energy_level, food_grid) = state
+    goal = problem.mazeExitPosition
+
+    dist_to_exit = hungerGamesManhattanHeuristic(state, problem)
+    needed_energy = dist_to_exit - curr_energy_level
+
+    # if the current energy level is not enough to reach the exit, pacman tries to accumulate food dots along the way;
+    # estimate how far does pacman need to step out from the initial shortest path,
+    # whose length is given by the manhattan distance;
+    if needed_energy > 0 and len(food_grid.asList()) > 0:
+        needed_food = needed_energy // problem.foodEnergyLevel
+        no_food_dots_inside_rectangle = noFoodDotsInRectange(curr_position, goal, food_grid)
+
+        if no_food_dots_inside_rectangle >= needed_food:
+            return dist_to_exit
+        else:
+            remaining_needed_food = needed_food - no_food_dots_inside_rectangle
+            d = 1
+            no_food_dots_outside_rectangle = 0
+            rectangle_bottom_left_x = min(curr_position[0], goal[0])
+            rectangle_bottom_left_y = min(curr_position[1], goal[1])
+            rectangle_top_right_x = max(curr_position[0], goal[0])
+            rectangle_top_right_y = max(curr_position[1], goal[1])
+
+            while no_food_dots_outside_rectangle < remaining_needed_food:
+                # extend the perimeter on which we search for food
+                if rectangle_bottom_left_x - 1 >= 0:
+                    rectangle_bottom_left_x -= 1
+                if rectangle_bottom_left_y - 1 >= 0:
+                    rectangle_bottom_left_y -= 1
+                if rectangle_top_right_x + 1 < problem.walls.width:
+                    rectangle_top_right_x += 1
+                if rectangle_top_right_y + 1 < problem.walls.height:
+                    rectangle_top_right_y += 1
+
+                # no of food dots on the perimeter at distance d
+                no_food_dots_on_perimeter = 0
+                for x in range(rectangle_bottom_left_x, rectangle_top_right_x):
+                    no_food_dots_on_perimeter += food_grid[x][rectangle_bottom_left_y]
+                    no_food_dots_on_perimeter += food_grid[x][rectangle_top_right_y]
+
+                for y in range(rectangle_bottom_left_y + 1, rectangle_top_right_y - 1):
+                    no_food_dots_on_perimeter += food_grid[rectangle_bottom_left_x][y]
+                    no_food_dots_on_perimeter += food_grid[rectangle_top_right_x][y]
+
+                no_food_dots_outside_rectangle += no_food_dots_on_perimeter
+                d += 1
+
+            # pacman had to step out at least 2 times on a distance d from the original rectangle to gather enough food supply
+            return dist_to_exit + 2 * d
+    else:
+        return dist_to_exit
+
+
+def hungerGamesClosestFoodDotReachableHeuristic(state, problem):
+    (curr_position, curr_energy_level, food_grid) = state
+
+    for food_dot in food_grid.asList():
+        if manhattanDistance(food_dot, curr_position) <= curr_energy_level:
+            return 0
+
+    return HungerGamesSearchProblem.IMPOSSIBLE_TO_SOLVE_STATE_HEURISTIC_VALUE
+
+
+def hungerGamesCombinedHeuristic(state, problem):
+    (curr_position, curr_energy_level, food_grid) = state
+    goal = problem.mazeExitPosition
+
+    dist_to_exit = hungerGamesManhattanHeuristic(state, problem)
+    needed_energy = dist_to_exit - curr_energy_level
+
+    # if the current energy level is not enough to reach the exit, pacman tries to accumulate food dots along the way;
+    # estimate how far does pacman need to step out from the initial shortest path,
+    # whose length is given by the manhattan distance;
+    if needed_energy > 0 and len(food_grid.asList()) > 0:
+        needed_food = needed_energy // problem.foodEnergyLevel
+        no_food_dots_inside_rectangle = noFoodDotsInRectange(curr_position, goal, food_grid)
+
+        if no_food_dots_inside_rectangle >= needed_food:
+            return max(hungerGamesClosestFoodDotReachableHeuristic(state, problem),
+                       hungerGamesManhattan2ShortestPathWith1OutsideStepVerificationHeuristic(state, problem))
+        else:
+            return max(hungerGamesClosestFoodDotReachableHeuristic(state, problem),
+                       hungerGamesStepsOutsideRectangleHeuristic(state, problem))
+    elif needed_energy > 0 and len(food_grid.asList()) == 0:
+        # Impossible to reach the goal
+        return HungerGamesSearchProblem.IMPOSSIBLE_TO_SOLVE_STATE_HEURISTIC_VALUE
+    else:
+        return dist_to_exit
 
 
 class StayEastSearchAgent(SearchAgent):

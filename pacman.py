@@ -4,7 +4,7 @@
 # educational purposes provided that (1) you do not distribute or publish
 # solutions, (2) you retain this notice, and (3) you provide clear
 # attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
-# 
+#
 # Attribution Information: The Pacman AI projects were developed at UC Berkeley.
 # The core projects and autograders were primarily created by John DeNero
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
@@ -52,6 +52,10 @@ import sys, types, time, random, os
 ###################################################
 # YOUR INTERFACE TO THE PACMAN WORLD: A GameState #
 ###################################################
+
+
+DEFAULT_INITIAL_PACMAN_ENERGY_LEVEL = 10
+DEFAULT_FOOD_ENERGY_LEVEL = 3
 
 class GameState:
     """
@@ -253,11 +257,11 @@ class GameState:
 
         return str(self.data)
 
-    def initialize(self, layout, numGhostAgents=1000):
+    def initialize(self, layout, pacmanEnergyLevel, foodEnergyLevel,numGhostAgents=1000,):
         """
         Creates an initial game state from a layout array (see layout.py).
         """
-        self.data.initialize(layout, numGhostAgents)
+        self.data.initialize(layout, numGhostAgents, pacmanEnergyLevel, foodEnergyLevel)
 
 
 ############################################################################
@@ -280,10 +284,10 @@ class ClassicGameRules:
     def __init__(self, timeout=30):
         self.timeout = timeout
 
-    def newGame(self, layout, pacmanAgent, ghostAgents, display, quiet=False, catchExceptions=False):
+    def newGame(self, layout, pacmanAgent, ghostAgents, pacmanEnergyLevel, foodEnergyLevel, display, quiet=False, catchExceptions=False):
         agents = [pacmanAgent] + ghostAgents[:layout.getNumGhosts()]
         initState = GameState()
-        initState.initialize(layout, len(ghostAgents))
+        initState.initialize(layout, pacmanEnergyLevel= pacmanEnergyLevel, foodEnergyLevel=foodEnergyLevel,numGhostAgents=len(ghostAgents),)
         game = Game(agents, display, self, catchExceptions=catchExceptions)
         game.state = initState
         self.initialState = initState.deepCopy()
@@ -359,6 +363,9 @@ class PacmanRules:
         vector = Actions.directionToVector(action, PacmanRules.PACMAN_SPEED)
         pacmanState.configuration = pacmanState.configuration.generateSuccessor(vector)
 
+        # Decrement energy after every move (action)
+        state.data.pacmanEnergyLevel -= 1
+
         # Eat
         next = pacmanState.configuration.getPosition()
         nearest = nearestPoint(next)
@@ -373,6 +380,7 @@ class PacmanRules:
         # Eat food
         if state.data.food[x][y]:
             state.data.scoreChange += 10
+            state.data.pacmanEnergyLevel += state.data.foodEnergyLevel
             state.data.food = state.data.food.copy()
             state.data.food[x][y] = False
             state.data._foodEaten = position
@@ -573,6 +581,12 @@ def readCommand(argv):
     if options.numTraining > 0:
         args['numTraining'] = options.numTraining
         if 'numTraining' not in agentOpts: agentOpts['numTraining'] = options.numTraining
+    if 'prob' in agentOpts and agentOpts['prob'] == 'HungerGamesSearchProblem':
+        if 'pacman_energy_level' in agentOpts:
+            args['pacmanEnergyLevel'] = int(agentOpts['pacman_energy_level'])
+        if 'food_energy_level' in agentOpts:
+            args['foodEnergyLevel'] = int(agentOpts['food_energy_level'])
+
     pacman = pacmanType(**agentOpts)  # Instantiate Pacman with agentArgs
     args['pacman'] = pacman
 
@@ -660,7 +674,7 @@ def replayGame(layout, actions, display):
     display.finish()
 
 
-def runGames(layout, pacman, ghosts, display, numGames, record, numTraining=0, catchExceptions=False, timeout=30):
+def runGames(layout, pacman, ghosts, display, numGames, record, pacmanEnergyLevel=DEFAULT_INITIAL_PACMAN_ENERGY_LEVEL, foodEnergyLevel=DEFAULT_FOOD_ENERGY_LEVEL, numTraining=0, catchExceptions=False, timeout=30):
     import __main__
     __main__.__dict__['_display'] = display
 
@@ -677,7 +691,7 @@ def runGames(layout, pacman, ghosts, display, numGames, record, numTraining=0, c
         else:
             gameDisplay = display
             rules.quiet = False
-        game = rules.newGame(layout, pacman, ghosts, gameDisplay, beQuiet, catchExceptions)
+        game = rules.newGame(layout, pacmanAgent=pacman, ghostAgents=ghosts, display=gameDisplay, quiet=beQuiet, catchExceptions=catchExceptions, pacmanEnergyLevel=pacmanEnergyLevel, foodEnergyLevel=foodEnergyLevel)
         game.run()
         if not beQuiet: games.append(game)
 

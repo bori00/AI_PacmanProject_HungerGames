@@ -4,7 +4,7 @@
 # educational purposes provided that (1) you do not distribute or publish
 # solutions, (2) you retain this notice, and (3) you provide clear
 # attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
-# 
+#
 # Attribution Information: The Pacman AI projects were developed at UC Berkeley.
 # The core projects and autograders were primarily created by John DeNero
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
@@ -31,6 +31,12 @@ INFO_PANE_COLOR = formatColor(.4,.4,0)
 SCORE_COLOR = formatColor(.9, .9, .9)
 PACMAN_OUTLINE_WIDTH = 2
 PACMAN_CAPTURE_OUTLINE_WIDTH = 4
+
+HIGH_ENERGY_COLOR = formatColor(.0, .9, .9)
+MEDIUM_ENERGY_COLOR = formatColor(1.0,0.6,0.0)
+LOW_ENERGY_COLOR = formatColor(.98,.41,.07)
+CRITICAL_ENERGY_COLOR = formatColor(.9,0,0)
+ENERGY_BAR_OUTLINE_COLOR = formatColor(.99, .99, .99)
 
 GHOST_COLORS = []
 GHOST_COLORS.append(formatColor(.9,0,0)) # Red
@@ -76,18 +82,22 @@ LASER_SIZE = 0.02
 CAPSULE_COLOR = formatColor(1,1,1)
 CAPSULE_SIZE = 0.25
 
+# Exit-door graphics
+MAZE_EXIT_COLOR = formatColor(0, 1, 1)
+MAZE_EXIT_SIZE = 0.5
+
 # Drawing walls
 WALL_RADIUS = 0.15
 
 class InfoPane:
-    def __init__(self, layout, gridSize):
+    def __init__(self, layout, gridSize, energyLevel):
         self.gridSize = gridSize
         self.width = (layout.width) * gridSize
         self.base = (layout.height + 1) * gridSize
         self.height = INFO_PANE_HEIGHT
-        self.fontSize = 24
+        self.fontSize = int((layout.width + layout.height) * 25 * 0.02)
         self.textColor = PACMAN_COLOR
-        self.drawPane()
+        self.drawPane(energyLevel)
 
     def toScreen(self, pos, y = None):
         """
@@ -102,8 +112,53 @@ class InfoPane:
         y = self.base + y
         return x,y
 
-    def drawPane(self):
-        self.scoreText = text( self.toScreen(0, 0  ), self.textColor, "SCORE:    0", "Times", self.fontSize, "bold")
+    def drawPane(self, energyLevel):
+        self.energyLevelText = text(self.toScreen(0, 0), HIGH_ENERGY_COLOR, "ENERGY:    "+str(energyLevel), "Times", self.fontSize,"bold")
+        self.drawEnergyLevelIndicator()
+
+    def drawEnergyLevelIndicator(self):
+        width = self.width * 0.03
+        height = self.height * 0.3
+        space = self.width * 0.005
+        startPosX, startPosY = (self.width * 0.7, height)
+        self.energyLevelBars = []
+        self.energyLevelBars.append(
+            rectangle(self.toScreen(startPosX, startPosY), width, height, ENERGY_BAR_OUTLINE_COLOR, HIGH_ENERGY_COLOR))
+        self.energyLevelBars.append(
+            rectangle(self.toScreen(startPosX + 2 * width + space, startPosY), width, height, ENERGY_BAR_OUTLINE_COLOR,
+                      HIGH_ENERGY_COLOR))
+        self.energyLevelBars.append(
+            rectangle(self.toScreen(startPosX + 4 * width + 2 * space, startPosY), width, height,
+                      ENERGY_BAR_OUTLINE_COLOR, HIGH_ENERGY_COLOR))
+        self.energyLevelBars.append(
+            rectangle(self.toScreen(startPosX + 6 * width + 3 * space, startPosY), width, height,
+                      ENERGY_BAR_OUTLINE_COLOR, HIGH_ENERGY_COLOR))
+
+    def updateEnergyLevel(self, energyLevel, maxEnergyLevel):
+        changeText(self.energyLevelText, "ENERGY: % 4d" % energyLevel)
+
+        if energyLevel >= maxEnergyLevel * 0.75:
+            for bar in self.energyLevelBars:
+                changeColor(bar, HIGH_ENERGY_COLOR)
+            changeColor(self.energyLevelText, HIGH_ENERGY_COLOR)
+        elif energyLevel >= maxEnergyLevel * 0.5:
+            changeColor(self.energyLevelBars[0], MEDIUM_ENERGY_COLOR)
+            changeColor(self.energyLevelBars[1], MEDIUM_ENERGY_COLOR)
+            changeColor(self.energyLevelBars[2], MEDIUM_ENERGY_COLOR)
+            changeColor(self.energyLevelBars[3], BACKGROUND_COLOR)
+            changeColor(self.energyLevelText, MEDIUM_ENERGY_COLOR)
+        elif energyLevel >= maxEnergyLevel * 0.25:
+            changeColor(self.energyLevelBars[0], LOW_ENERGY_COLOR)
+            changeColor(self.energyLevelBars[1], LOW_ENERGY_COLOR)
+            changeColor(self.energyLevelBars[2], BACKGROUND_COLOR)
+            changeColor(self.energyLevelBars[3], BACKGROUND_COLOR)
+            changeColor(self.energyLevelText, LOW_ENERGY_COLOR)
+        else:
+            changeColor(self.energyLevelBars[0], CRITICAL_ENERGY_COLOR)
+            changeColor(self.energyLevelBars[1], BACKGROUND_COLOR)
+            changeColor(self.energyLevelBars[2], BACKGROUND_COLOR)
+            changeColor(self.energyLevelBars[3], BACKGROUND_COLOR)
+            changeColor(self.energyLevelText, CRITICAL_ENERGY_COLOR)
 
     def initializeGhostDistances(self, distances):
         self.ghostDistanceText = []
@@ -183,7 +238,7 @@ class PacmanGraphics:
         self.width = layout.width
         self.height = layout.height
         self.make_window(self.width, self.height)
-        self.infoPane = InfoPane(layout, self.gridSize)
+        self.infoPane = InfoPane(layout, self.gridSize, state.pacmanEnergyLevel)
         self.currentState = layout
 
     def drawDistributions(self, state):
@@ -206,6 +261,7 @@ class PacmanGraphics:
         self.drawWalls(layout.walls)
         self.food = self.drawFood(layout.food)
         self.capsules = self.drawCapsules(layout.capsules)
+        self.mazeExit = self.drawMazeExit(layout.mazeExit)
         refresh()
 
     def drawAgentObjects(self, state):
@@ -249,7 +305,7 @@ class PacmanGraphics:
             self.removeFood(newState._foodEaten, self.food)
         if newState._capsuleEaten != None:
             self.removeCapsule(newState._capsuleEaten, self.capsules)
-        self.infoPane.updateScore(newState.score)
+        self.infoPane.updateEnergyLevel(newState.pacmanEnergyLevel, newState.initialEnergyLevel)
         if 'ghostDistances' in dir(newState):
             self.infoPane.updateGhostDistances(newState.ghostDistances)
 
@@ -552,6 +608,22 @@ class PacmanGraphics:
                               width = 1)
             capsuleImages[capsule] = dot
         return capsuleImages
+
+    def drawMazeExit(self, exit_pos):
+        (screen_x, screen_y) = self.to_screen(exit_pos)
+        outerSquare = square((screen_x, screen_y),
+                             MAZE_EXIT_SIZE * self.gridSize,
+                             color=MAZE_EXIT_COLOR,
+                             filled = 0)
+        innerSquare = square((screen_x+0.25, screen_y+0.25),
+                             MAZE_EXIT_SIZE * self.gridSize * 0.5,
+                             color=MAZE_EXIT_COLOR,
+                             filled=1)
+        imageParts = []
+        imageParts.append(outerSquare)
+        imageParts.append(innerSquare)
+        return imageParts
+
 
     def removeFood(self, cell, foodImages ):
         x, y = cell
