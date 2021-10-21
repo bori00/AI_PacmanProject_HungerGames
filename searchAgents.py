@@ -383,43 +383,6 @@ def posInRectange(corner1, corner2, pos):
 def noFoodDotsInRectange (corner1, corner2, food_grid):
     return len([food_dot for food_dot in food_grid.asList() if posInRectange(corner1, corner2, food_dot)])
 
-def hungerGamesManhattanAndExtraStepsBasedOnFoodDotsInRectangleHeuristic(state, problem):
-    """
-    A heuristic for the HungerGamesSearchProblem, based on the ManhattanDistance and a weak approximation for the
-    minimum number of extra steps needed for getting the required energy to reach the goal.
-
-    Short description:
-    - this heuristic assumes that if manhattanDistance (current position, goal) = m,
-    then at least m steps will be needed to reach the goal.
-    - moreover, this heuristic takes into account the energy level, as follows: if the current energy level < m,
-    then some extra steps will be needed to get the required energy.
-    The heuristic sets a lower bound for the number of extra steps by saying that along a shortest path
-    from the current position to the goal (with length m), PacMan can only eat the food dots which are in the rectangle
-    enclosed by the current position and the goal position (these two points one of the diagonals of the rectangle)
-
-    """
-    curr_pos = state[0]
-    curr_energy_level = state[1]
-    goal = problem.mazeExitPosition
-    manhattan_dist = manhattanDistance(curr_pos, goal)
-    if manhattan_dist > curr_energy_level:
-        import math
-        food_grid = state[2]
-        food_dots_in_rectangle = noFoodDotsInRectange(curr_pos, goal, food_grid)
-        needed_food_dots = math.ceil((manhattan_dist - curr_energy_level) / problem.foodEnergyLevel)
-        if food_dots_in_rectangle < needed_food_dots:
-            min_path_cost = 1000000000
-            for food_dot in food_grid.asList():
-                path_cost = manhattanDistance(curr_pos, food_dot) + manhattanDistance(food_dot, goal)
-                if not posInRectange(curr_pos, goal, food_dot) and path_cost < min_path_cost:
-                    min_path_cost = path_cost
-            return min_path_cost
-        else:
-            return manhattan_dist
-    else:
-        return manhattan_dist
-
-
 class StayEastSearchAgent(SearchAgent):
     """
     An agent for position search with a cost function that penalizes being in
