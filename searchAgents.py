@@ -255,7 +255,7 @@ class HungerGamesSearchProblem(search.SearchProblem):
     - food_grid is a grid showing whether a cell of the maze has any food on it.
     """
 
-    def __init__(self, gameState, pacman_energy_level=10, food_energy_level=3, warn=True, visualize=True):
+    def __init__(self, game_state, pacman_energy_level=10, food_energy_level=3, warn=True, visualize=True):
         """
         Stores the start and goal.
 
@@ -265,10 +265,10 @@ class HungerGamesSearchProblem(search.SearchProblem):
         warn: If set to true, the validity of the initial game state is initialized.
         visualize: If set to true, the expanded nodes are marked in the maze layout, in the graphical window.
         """
-        self.walls = gameState.getWalls()
-        self.startState = (gameState.getPacmanPosition(), pacman_energy_level, gameState.getFood())
+        self.walls = game_state.getWalls()
+        self.startState = (game_state.getPacmanPosition(), pacman_energy_level, game_state.getFood())
         self.foodEnergyLevel = food_energy_level
-        self.mazeExitPosition = gameState.getMazeExitPosition()
+        self.mazeExitPosition = game_state.getMazeExitPosition()
         self.visualize = visualize
         if warn and (self.mazeExitPosition == ()):
             print 'Warning: this does not look like a regular hunger games search maze'
@@ -353,6 +353,35 @@ class HungerGamesSearchProblem(search.SearchProblem):
             cost += 1
         return cost
 
+
+def hungerGamesEuclideanHeuristic(state, problem):
+    """The Euclidean distance heuristic for a HungerGamesSearchProblem"""
+    curr_pos = state[0]
+    goal = problem.mazeExitPosition
+    return ((curr_pos[0] - goal[0]) ** 2 + (curr_pos[1] - goal[1]) ** 2) ** 0.5
+
+
+def manhattanDistance(pointA, pointB):
+    """Helper function for computing the ManhattanDistance between two points given via their (x, y) coordinates"""
+    return abs(pointA[0] - pointB[0]) + abs(pointA[1] - pointB[1])
+
+
+def hungerGamesManhattanHeuristic(state, problem):
+    """The Manhattan distance heuristic for a HungerGamesSearchProblem"""
+    curr_pos = state[0]
+    goal = problem.mazeExitPosition
+    return manhattanDistance(curr_pos, goal)
+
+def posInRectange(corner1, corner2, pos):
+    rectangle_low_bound = min(corner1[0], corner2[0])
+    rectangle_high_bound = max(corner1[0], corner2[0])
+    rectangle_left_bound = min(corner1[1], corner2[1])
+    rectangle_right_bound = max(corner1[1], corner2[1])
+    return rectangle_high_bound >= pos[
+            0] >= rectangle_low_bound and rectangle_right_bound >= pos[1] >= rectangle_left_bound
+
+def noFoodDotsInRectange (corner1, corner2, food_grid):
+    return len([food_dot for food_dot in food_grid.asList() if posInRectange(corner1, corner2, food_dot)])
 
 class StayEastSearchAgent(SearchAgent):
     """
