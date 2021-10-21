@@ -255,7 +255,7 @@ class HungerGamesSearchProblem(search.SearchProblem):
     - food_grid is a grid showing whether a cell of the maze has any food on it.
     """
 
-    def __init__(self, gameState, pacman_energy_level=10, food_energy_level=3, warn=True, visualize=True):
+    def __init__(self, game_state, pacman_energy_level=10, food_energy_level=3, warn=True, visualize=True):
         """
         Stores the start and goal.
 
@@ -265,10 +265,10 @@ class HungerGamesSearchProblem(search.SearchProblem):
         warn: If set to true, the validity of the initial game state is initialized.
         visualize: If set to true, the expanded nodes are marked in the maze layout, in the graphical window.
         """
-        self.walls = gameState.getWalls()
-        self.startState = (gameState.getPacmanPosition(), pacman_energy_level, gameState.getFood())
+        self.walls = game_state.getWalls()
+        self.startState = (game_state.getPacmanPosition(), pacman_energy_level, game_state.getFood())
         self.foodEnergyLevel = food_energy_level
-        self.mazeExitPosition = gameState.getMazeExitPosition()
+        self.mazeExitPosition = game_state.getMazeExitPosition()
         self.visualize = visualize
         if warn and (self.mazeExitPosition == ()):
             print 'Warning: this does not look like a regular hunger games search maze'
@@ -372,18 +372,16 @@ def hungerGamesManhattanHeuristic(state, problem):
     goal = problem.mazeExitPosition
     return manhattanDistance(curr_pos, goal)
 
-
-def isPosInRectangle(corner1, corner2, pos):
+def posInRectange(corner1, corner2, pos):
     rectangle_low_bound = min(corner1[0], corner2[0])
     rectangle_high_bound = max(corner1[0], corner2[0])
     rectangle_left_bound = min(corner1[1], corner2[1])
     rectangle_right_bound = max(corner1[1], corner2[1])
-    return rectangle_high_bound >= pos[0] >= rectangle_low_bound and \
-           rectangle_right_bound >= pos[1] >= rectangle_left_bound
+    return rectangle_high_bound >= pos[
+            0] >= rectangle_low_bound and rectangle_right_bound >= pos[1] >= rectangle_left_bound
 
-
-def noFoodDotsInRectange(corner1, corner2, food_grid):
-    return len([food_dot for food_dot in food_grid.asList() if isPosInRectangle(corner1, corner2, food_dot)])
+def noFoodDotsInRectange (corner1, corner2, food_grid):
+    return len([food_dot for food_dot in food_grid.asList() if posInRectange(corner1, corner2, food_dot)])
 
 
 def hungerGamesFoodOutsideShortestPathHeuristic(state, problem=None):
@@ -439,72 +437,6 @@ def hungerGamesFoodOutsideShortestPathHeuristic(state, problem=None):
             return dist_to_exit + 2 * d
     else:
         return dist_to_exit
-
-def hungerGamesFoodOutsideShortestPathOptimisticHeuristic(state, problem=None):
-    (curr_position, curr_energy_level, food_grid) = state
-    goal = problem.mazeExitPosition
-
-    dist_to_exit = hungerGamesManhattanHeuristic(state, problem)
-    needed_energy = curr_energy_level - dist_to_exit
-
-    # if the current energy level is not enough to reach the exit, pacman tries to accumulate food dots along the way;
-    # estimate how far does pacman need to step out from the initial shortest path,
-    # whose length is given by the manhattan distance;
-    if needed_energy < 0 and len(food_grid.asList()) > 0:
-        needed_food = int(abs(needed_energy) / problem.foodEnergyLevel)
-        no_food_dots_inside_rectangle = noFoodDotsInRectange(curr_position, goal, food_grid)
-
-        if no_food_dots_inside_rectangle >= needed_food:
-            return dist_to_exit
-        else:
-            remaining_needed_food = needed_food - no_food_dots_inside_rectangle
-            no_food_dots_outside_rectangle = 0
-            rectangle_bottom_left_x = min(curr_position[0], goal[0])
-            rectangle_bottom_left_y = min(curr_position[1], goal[1])
-            rectangle_top_right_x = max(curr_position[0], goal[0])
-            rectangle_top_right_y = max(curr_position[1], goal[1])
-            initial_area_coordinates = ((rectangle_bottom_left_x, rectangle_bottom_left_y),
-                                        (rectangle_top_right_x, rectangle_top_right_y))
-
-            while no_food_dots_outside_rectangle < remaining_needed_food:
-                # extend the perimeter on which we search for food: suppose there is enough food in the whole maze
-                if rectangle_bottom_left_x - 1 >= 0:
-                    rectangle_bottom_left_x -= 1
-                if rectangle_bottom_left_y - 1 >= 0:
-                    rectangle_bottom_left_y -= 1
-                if rectangle_top_right_x + 1 < problem.walls.width:
-                    rectangle_top_right_x += 1
-                if rectangle_top_right_y + 1 < problem.walls.height:
-                    rectangle_top_right_y += 1
-
-                # no of food dots on the extended perimeter
-                no_food_dots_on_perimeter = 0
-
-                for x in range(rectangle_bottom_left_x, rectangle_top_right_x):
-                    no_food_dots_on_perimeter += food_grid[x][rectangle_bottom_left_y]
-                    no_food_dots_on_perimeter += food_grid[x][rectangle_top_right_y]
-
-                # do not count the corners twice
-                for y in range(rectangle_bottom_left_y+1, rectangle_top_right_y-1):
-                    no_food_dots_on_perimeter += food_grid[rectangle_bottom_left_x][y]
-                    no_food_dots_on_perimeter += food_grid[rectangle_top_right_x][y]
-
-                no_food_dots_outside_rectangle += no_food_dots_on_perimeter
-
-            expanded_dist_left = initial_area_coordinates[0][0] - rectangle_bottom_left_x
-            expanded_dist_down = initial_area_coordinates[0][1] - rectangle_bottom_left_y
-            expanded_dist_right = rectangle_top_right_x - initial_area_coordinates[1][0]
-            expanded_dist_up = rectangle_top_right_y - initial_area_coordinates[1][1]
-
-            # pacman had to step out on a specific distance from any of the side of the original rectangle
-            # to gather enough food supply, then return to the original path:
-            # consider the max distance he had to step out, to gather enough food dots and
-            # the min distance to come back to the original path
-            return dist_to_exit + max(expanded_dist_left,expanded_dist_down,expanded_dist_right,expanded_dist_up) +\
-                   min(expanded_dist_left, expanded_dist_down, expanded_dist_right, expanded_dist_up)
-    else:
-        return dist_to_exit
-
 
 class StayEastSearchAgent(SearchAgent):
     """
