@@ -1,0 +1,11 @@
+heuristic,pacmanEnergyLevel,foodEnergyLevel,layout,expandedNodes,cost
+euclidean,7,2,tinyHungerGames,30,13
+manhattan,7,2,tinyHungerGames,52,13
+hungerGamesFoodOutsideShortestPathHeuristic,7,2,tinyHungerGames,52,13
+euclidean,10,3,smallHungerGames,152,17
+manhattan,10,3,smallHungerGames,132,17
+hungerGamesFoodOutsideShortestPathHeuristic,10,3,smallHungerGames, 132,17
+euclidean,12,4,mediumHungerGames,3514,33
+manhattan,12,4,mediumHungerGames,2025,33
+hungerGamesFoodOutsideShortestPathHeuristic,12,4,mediumHungerGames,1742,33
+

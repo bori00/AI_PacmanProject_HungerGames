@@ -16,7 +16,6 @@
 In search.py, you will implement generic search algorithms which are called by
 Pacman agents (in searchAgents.py).
 """
-
 import util
 
 
@@ -112,6 +111,29 @@ def nullHeuristic(state, problem=None):
     return 0
 
 
+def checkHeuristic(heuristic, problem, state, solutionCost):
+        h0 = heuristic(state, problem)
+
+        if solutionCost == 0:
+            if h0 == 0:
+                return True, ''
+            else:
+                return False, 'Heuristic failed H(goal) == 0 test'
+
+        if h0 < 0:
+            return False, 'Heuristic failed H >= 0 test'
+        if not h0 > 0:
+            return False, 'Heuristic failed non-triviality test'
+        if not h0 <= solutionCost:
+            return False, 'Heuristic failed admissibility test'
+
+        for succ, action, stepCost in problem.getSuccessors(state):
+            h1 = heuristic(succ, problem)
+            if h1 < 0: return False, 'Heuristic failed H >= 0 test'
+            if h0 - h1 > stepCost: return False, 'Heuristic failed consistency test'
+
+        return True, ''
+
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     from util import PriorityQueue
@@ -165,6 +187,8 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     while parent_state_and_g_cost_dict[curr_state][0] is not root_state:
         step_list.insert(0, parent_state_and_g_cost_dict[curr_state][1])
         curr_state = parent_state_and_g_cost_dict[curr_state][0]
+
+    print checkHeuristic(heuristic,problem,problem.getStartState(),len(step_list))
 
     return step_list
 
