@@ -1,14 +1,24 @@
-heuristic,pacmanEnergyLevel,foodEnergyLevel,layout,expandedNodes,cost
+heuristic,pacmanEnergyLevel,foodEnergyLevel,layout,expandedNodes,cost,time
 euclidean,7,2,tinyHungerGames,37,13
 manhattan,7,2,tinyHungerGames,42,13
 hungerGamesFoodOutsideShortestPathHeuristic,7,2,tinyHungerGames,42,13
-hungerGamesFoodOutsideShortestPathOptimisticHeuristic,7,2,tinyHungerGames,42,13
 euclidean,10,3,smallHungerGames,305,17
 manhattan,10,3,smallHungerGames,234,17
 hungerGamesFoodOutsideShortestPathHeuristic,10,3,smallHungerGames, 172,17
-hungerGamesFoodOutsideShortestPathOptimisticHeuristic,10,3,smallHungerGames, 190,17
 euclidean,12,4,mediumHungerGames,3386,33
 manhattan,12,4,mediumHungerGames,1961,33
 hungerGamesFoodOutsideShortestPathHeuristic,12,4,mediumHungerGames,428,33
-hungerGamesFoodOutsideShortestPathOptimisticHeuristic,12,4,mediumHungerGames,985,33
+euclidean,5,5,largeHungerGames,23051,52,57.8
+manhattan,5,5,largeHungerGames,11267,52,17.7
+hungerGamesFoodOutsideShortestPathHeuristic,5,5,largeHungerGames,7879,52,21.3
+euclidean,5,1,denseHungerGames,8287,23,14.1
+manhattan,5,1,denseHungerGames,3518,23,3.8
+hungerGamesFoodOutsideShortestPathHeuristic,5,1,denseHungerGames,802,23,1.2
+euclidean,12,4,sparseHungerGames,15909,44,46.3
+manhattan,12,4,sparseHungerGames,10946,44,21.8
+hungerGamesFoodOutsideShortestPathHeuristic,12,4,sparseHungerGames,2161,44,6.1
+euclidean,5,2,diagonalHungerGames,6429,35,6.7
+manhattan,5,2,diagonalHungerGames,1147,35,1.0
+hungerGamesFoodOutsideShortestPathHeuristic,5,2,diagonalHungerGames,1104,35,1.8
+
 
