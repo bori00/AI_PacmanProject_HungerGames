@@ -410,22 +410,31 @@ def hungerGamesFoodOutsideShortestPathHeuristic(state, problem=None):
             rectangle_bottom_left_y = min(curr_position[1], goal[1])
             rectangle_top_right_x = max(curr_position[0], goal[0])
             rectangle_top_right_y = max(curr_position[1], goal[1])
-            no_food_dots_prev_rectangle = no_food_dots_inside_rectangle
 
             while no_food_dots_outside_rectangle < remaining_needed_food:
                 # extend the perimeter on which we search for food
-                expanded_rectangle_bottom_left_x = rectangle_bottom_left_x - d if rectangle_bottom_left_x > d else rectangle_bottom_left_x - d + 1
-                expanded_rectangle_bottom_left_y = rectangle_bottom_left_y - d if rectangle_bottom_left_y > d else rectangle_bottom_left_y - d + 1
-                expanded_rectangle_top_right_x = rectangle_top_right_x + d if rectangle_top_right_x + d < problem.walls.width else rectangle_top_right_x + d - 1
-                expanded_rectangle_top_right_y = rectangle_top_right_y + d if rectangle_top_right_y + d < problem.walls.height else rectangle_top_right_x + d - 1
+                if rectangle_bottom_left_x - 1 >= 0:
+                    rectangle_bottom_left_x -= 1
+                if rectangle_bottom_left_y - 1 >= 0:
+                    rectangle_bottom_left_y -= 1
+                if rectangle_top_right_x + 1 < problem.walls.width:
+                    rectangle_top_right_x += 1
+                if rectangle_top_right_y + 1 < problem.walls.height:
+                    rectangle_top_right_y += 1
 
-                no_food_dots_curr_rectangle = noFoodDotsInRectange((expanded_rectangle_bottom_left_x, expanded_rectangle_bottom_left_y),
-                                     (expanded_rectangle_top_right_x, expanded_rectangle_top_right_y), food_grid)
                 # no of food dots on the perimeter at distance d
-                no_food_dots_on_perimeter_d = no_food_dots_curr_rectangle - no_food_dots_prev_rectangle
+                no_food_dots_on_perimeter = 0
+                for x in range(rectangle_bottom_left_x, rectangle_top_right_x):
+                    no_food_dots_on_perimeter += food_grid[x][rectangle_bottom_left_y]
+                    no_food_dots_on_perimeter += food_grid[x][rectangle_top_right_y]
 
-                no_food_dots_outside_rectangle += no_food_dots_on_perimeter_d
+                for y in range(rectangle_bottom_left_y+1, rectangle_top_right_y-1):
+                    no_food_dots_on_perimeter += food_grid[rectangle_bottom_left_x][y]
+                    no_food_dots_on_perimeter += food_grid[rectangle_top_right_x][y]
+
+                no_food_dots_outside_rectangle += no_food_dots_on_perimeter
                 d += 1
+
             # pacman had to step out at least 2 times on a distance d from the original rectangle to gather enough food supply
             return dist_to_exit + 2 * d
     else:
