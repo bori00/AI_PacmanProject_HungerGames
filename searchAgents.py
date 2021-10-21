@@ -395,7 +395,8 @@ def hungerGamesFoodOutsideShortestPathHeuristic(state, problem=None):
     # estimate how far does pacman need to step out from the initial shortest path,
     # whose length is given by the manhattan distance;
     if needed_energy > 0 and len(food_grid.asList()) > 0:
-        needed_food = needed_energy / problem.foodEnergyLevel
+        import math
+        needed_food = int(math.ceil(float(needed_energy) / problem.foodEnergyLevel))
         no_food_dots_inside_rectangle = noFoodDotsInRectange(curr_position, goal, food_grid)
 
         if no_food_dots_inside_rectangle >= needed_food:
