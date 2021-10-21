@@ -389,13 +389,13 @@ def hungerGamesFoodOutsideShortestPathHeuristic(state, problem=None):
     goal = problem.mazeExitPosition
 
     dist_to_exit = hungerGamesManhattanHeuristic(state, problem)
-    needed_energy = curr_energy_level - dist_to_exit
+    needed_energy = dist_to_exit - curr_energy_level
 
     # if the current energy level is not enough to reach the exit, pacman tries to accumulate food dots along the way;
     # estimate how far does pacman need to step out from the initial shortest path,
     # whose length is given by the manhattan distance;
-    if needed_energy < 0 and len(food_grid.asList()) > 0:
-        needed_food = int(abs(needed_energy) / problem.foodEnergyLevel)
+    if needed_energy > 0 and len(food_grid.asList()) > 0:
+        needed_food = needed_energy // problem.foodEnergyLevel
         no_food_dots_inside_rectangle = noFoodDotsInRectange(curr_position, goal, food_grid)
 
         if no_food_dots_inside_rectangle >= needed_food:
