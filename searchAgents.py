@@ -691,6 +691,8 @@ def hungerGamesManhattanShortestPathWith1WrongStepVerificationHeuristic(state, p
     with just one wrong step and its annulment exists
     --> cost = manhattan distance + 2
     3. otherwise. cost >= manhattan distance + 4
+
+    TODO: link to the documentation
     """
     curr_pos = state[0]
     energy_level = state[1]
@@ -748,6 +750,7 @@ def hungerGamesManhattanShortestPathWith1WrongStepVerificationHeuristic(state, p
 
 
 def hungerGamesManhattanAndStepsOutsideRectangleHeuristic(state, problem=None):
+    #TODO: link to the documentation
     (curr_position, curr_energy_level, food_grid) = state
     goal = problem.mazeExitPosition
 
@@ -808,6 +811,7 @@ def hungerGamesClosestFoodDotReachableHeuristic(state, problem):
     position of PacMan with the current energy level.
 
     If yes, the heuristic returns 0, otherwise infinity (or a very large value, specified in the problem definition).
+    TODO: link to the documentation
     """
     (curr_position, curr_energy_level, food_grid) = state
     goal = problem.mazeExitPosition
@@ -837,6 +841,7 @@ def hungerGamesCombinedHeuristic(state, problem):
     hungerGamesManhattanAndStepsOutsideRectangleHeuristic(state, problem) is returned.
 
     TODO: prove consistency!!!! seems obvious with hungerGamesManhattanShortestPathVerificationHeuristic, but not here
+    TODO: link to the documentation
     """
     (curr_position, curr_energy_level, food_grid) = state
     goal = problem.mazeExitPosition
