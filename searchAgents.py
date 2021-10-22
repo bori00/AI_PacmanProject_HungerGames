@@ -474,7 +474,7 @@ def hungerGamesManhattan2MaxFoodOnShortestPathHeuristic(state, problem):
     max_food_on_shortest_path = max_food_dot_grid[len(max_food_dot_grid) - 1][len(max_food_dot_grid[0]) - 1]
     shortest_path_length = manhattanDistance(curr_pos, goal)
 
-    # If by eating the maximum amount of food dots that can be found on a minimum cost path Python still wouldn't have
+    # If by eating the maximum amount of food dots that can be found on a minimum cost path PacMan still wouldn't have
     # enough energy to reach the goal, then at least 1 step in the wrong direction + 1 annulment step is needed,
     # additionally to the cost of manhattan distance.
     if energy_level + problem.foodEnergyLevel * max_food_on_shortest_path < shortest_path_length:
