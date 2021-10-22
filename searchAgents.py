@@ -605,9 +605,8 @@ def buildMinEnergyLevelGrid(food_grid, food_energy_level):
                                                     food_grid[no_rows - 1][j] + 1)
 
     for j in range(no_cols - 3, -1, -1):
-        min_child_energy_level = min(min_energy_level_grid[no_rows - 2][j + 1], min_energy_level_grid[no_rows - 1][j])
-        min_energy_level_grid[no_rows - 2][j] = max(0,
-                                                    min_child_energy_level - food_energy_level * food_grid[no_rows - 2][
+        min_energy_level_grid[no_rows - 2][j] = max(0, min_energy_level_grid[no_rows - 2][j + 1] - food_energy_level *
+                                                    food_grid[no_rows - 2][
                                                         j] + 1)
 
     for i in range(no_rows - 2, -1, -1):
@@ -615,9 +614,9 @@ def buildMinEnergyLevelGrid(food_grid, food_energy_level):
                                                     food_grid[i][no_cols - 1] + 1)
 
     for i in range(no_rows - 3, -1, -1):
-        min_child_energy_level = min(min_energy_level_grid[i + 1][no_cols - 2], min_energy_level_grid[i][no_cols - 1])
-        min_energy_level_grid[i][no_cols - 2] = max(0, min_child_energy_level - food_energy_level * food_grid[i][
-            no_cols - 2] + 1)
+        min_energy_level_grid[i][no_cols - 2] = max(0, min_energy_level_grid[i + 1][no_cols - 2] - food_energy_level *
+                                                    food_grid[i][
+                                                        no_cols - 2] + 1)
 
     for i in range(no_rows - 3, -1, -1):
         for j in range(no_cols - 3, -1, -1):
@@ -717,31 +716,31 @@ def hungerGamesManhattanShortestPathWith1WrongStepVerificationHeuristic(state, p
 
         min_energy_level_grid = buildMinEnergyLevelGrid(extended_goal_oriented_food_grid, problem.foodEnergyLevel)
 
-        extended_no_rows = len(max_energy_level_grid)
-        extended_no_cols = len(max_energy_level_grid[0])
+        last_inside_col = len(max_energy_level_grid[0]) - 2
+        last_inside_row = len(max_energy_level_grid) - 2
 
-        for j in range(1, extended_no_cols - 1):
-            if min_energy_level_grid[0][j] + 1 <= max_energy_level_grid[1][j]:
-                return shortest_path_length + 2
-
-        for j in range(1, extended_no_cols - 2):
-            if min_energy_level_grid[extended_no_rows - 1][j] + 1 <= max_energy_level_grid[extended_no_rows - 2][j]:
-                return shortest_path_length + 2
-
-        for i in range(1, extended_no_rows - 1):
-            if min_energy_level_grid[i][0] + 1 <= max_energy_level_grid[i][1]:
-                return shortest_path_length + 2
-
-        for i in range(1, extended_no_rows - 2):
-            if min_energy_level_grid[i][extended_no_cols - 1] + 1 <= max_energy_level_grid[i][extended_no_cols - 2]:
-                return shortest_path_length + 2
-
-        for i in range(1, extended_no_rows - 1):
-            for j in range(1, extended_no_cols - 1):
-                if min_energy_level_grid[i][j] + 1 <= max_energy_level_grid[i + 1][j]:
+        for i in range(1, last_inside_row):
+            for j in range(1, last_inside_col):
+                if min_energy_level_grid[i][j-1] + 1 <= max_energy_level_grid[i][j]:
                     return shortest_path_length + 2
-                if min_energy_level_grid[i][j] + 1 <= max_energy_level_grid[i][j + 1]:
+                if min_energy_level_grid[i-1][j] + 1 <= max_energy_level_grid[i][j]:
                     return shortest_path_length + 2
+
+        for i in range(1, last_inside_row):
+            if min_energy_level_grid[i][last_inside_col - 1] + 1 <= max_energy_level_grid[i][last_inside_col]:
+                return shortest_path_length + 2
+            if min_energy_level_grid[i - 1][last_inside_col] + 1 <= max_energy_level_grid[i][last_inside_col]:
+                return shortest_path_length + 2
+            if min_energy_level_grid[i][last_inside_col + 1] + 1 <= max_energy_level_grid[i][last_inside_col]:
+                return shortest_path_length + 2
+
+        for j in range(1, last_inside_col):
+            if min_energy_level_grid[last_inside_row - 1][j] + 1 <= max_energy_level_grid[last_inside_row][j]:
+                return shortest_path_length + 2
+            if min_energy_level_grid[last_inside_row][j - 1] + 1 <= max_energy_level_grid[last_inside_row][j]:
+                return shortest_path_length + 2
+            if min_energy_level_grid[last_inside_row + 1][j] + 1 <= max_energy_level_grid[last_inside_row][j]:
+                return shortest_path_length + 2
 
         return shortest_path_length + 4
     else:
@@ -750,11 +749,11 @@ def hungerGamesManhattanShortestPathWith1WrongStepVerificationHeuristic(state, p
 
 
 def hungerGamesManhattanAndStepsOutsideRectangleHeuristic(state, problem=None):
-    #TODO: link to the documentation
+    # TODO: link to the documentation
     (curr_position, curr_energy_level, food_grid) = state
     goal = problem.mazeExitPosition
 
-    dist_to_exit = hungerGamesManhattanHeuristic(state, problem)
+    dist_to_exit = manhattanDistance(curr_position, goal)
     needed_energy = dist_to_exit - curr_energy_level
 
     # if the current energy level is not enough to reach the exit, pacman tries to accumulate food dots along the way;
@@ -849,7 +848,8 @@ def hungerGamesCombinedHeuristic(state, problem):
     dist_to_exit = hungerGamesManhattanHeuristic(state, problem)
     needed_energy = dist_to_exit - curr_energy_level
 
-    if needed_energy > 0 and hungerGamesClosestFoodDotReachableHeuristic(state, problem) == HungerGamesSearchProblem.IMPOSSIBLE_TO_SOLVE_STATE_HEURISTIC_VALUE:
+    if needed_energy > 0 and hungerGamesClosestFoodDotReachableHeuristic(state,
+                                                                         problem) == HungerGamesSearchProblem.IMPOSSIBLE_TO_SOLVE_STATE_HEURISTIC_VALUE:
         return HungerGamesSearchProblem.IMPOSSIBLE_TO_SOLVE_STATE_HEURISTIC_VALUE
 
     needed_food = needed_energy // problem.foodEnergyLevel
