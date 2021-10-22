@@ -591,6 +591,7 @@ def buildMinEnergyLevelGrid(food_grid, food_energy_level):
                           - the energy given by the food dots on location (x, y)
                           + 1
     Where +1 is due to the cost of stepping from (x, y) to (x, y+1) or to (x+1, y).
+    TODO: update, since resolving bug
     """
     # assumes minimum 3 rows and 3 columns in the grid
     no_rows = len(food_grid)
@@ -691,6 +692,7 @@ def hungerGamesManhattanShortestPathWith1WrongStepVerificationHeuristic(state, p
     --> cost = manhattan distance + 2
     3. otherwise. cost >= manhattan distance + 4
 
+    TODO: update, since resolving bug
     TODO: link to the documentation
     """
     curr_pos = state[0]
