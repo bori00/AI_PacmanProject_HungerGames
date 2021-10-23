@@ -1060,8 +1060,21 @@ def hungerGamesManhattanShortestPathWith1WrongStepVerificationHeuristic(
 
 def hungerGamesManhattanAndStepsOutsideRectangleHeuristic(state,
                                                           problem=None):
-    # TODO: Bea --> documentation
     """
+    This heuristic takes into consideration how many "incorrect" steps
+    (meaning in the wrong direction) does PacMan take to gather all
+    the necessary food-dots which fall out of the PacMan-Goal
+    rectangle.
+
+    It gives an estimation of the min number of steps in the
+    "incorrect"
+    direction, by iteratively extending the search rectangle, to cover
+    the necessary number of food dots.
+
+    The search rectangle is extended at each step by 1 cell until it
+    contains at least the remaining number of food dots required to
+    reach the goal from PacMan's current position.
+
     Heuristic identifier in the documentation: C
     """
     (curr_position, curr_energy_level, food_grid) = state
