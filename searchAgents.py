@@ -237,6 +237,7 @@ class PositionSearchProblem(search.SearchProblem):
             cost += self.costFn((x, y))
         return cost
 
+"""=============================================START OF MY OWN CODE================================================="""
 
 class HungerGamesSearchProblem(search.SearchProblem):
     """
@@ -877,6 +878,7 @@ def hungerGamesCombinedHeuristic(state, problem):
         # whose length is given by the manhattan distance;
         return hungerGamesManhattanAndStepsOutsideRectangleHeuristic(state, problem)
 
+"""=============================================END OF MY OWN CODE==================================================="""
 
 class StayEastSearchAgent(SearchAgent):
     """
