@@ -1,7 +1,7 @@
 # tiny layout:
 python pacman.py -l tinyHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=7,food_energy_level=2,heuristic=hungerGamesEuclideanHeuristic
 python pacman.py -l tinyHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=7,food_energy_level=2,heuristic=hungerGamesManhattanHeuristic
-python pacman.py -l tinyHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=7,food_energy_level=2,heuristic=hungerGamesManhattan2MaxFoodOnShortestPathHeuristic
+python pacman.py -l tinyHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=7,food_energy_level=2,heuristic=hungerGamesManhattanAndMaxFoodOnShortestPathHeuristic
 python pacman.py -l tinyHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=7,food_energy_level=2,heuristic=hungerGamesManhattanShortestPathVerificationHeuristic
 python pacman.py -l tinyHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=7,food_energy_level=2,heuristic=hungerGamesManhattanShortestPathWith1WrongStepVerificationHeuristic
 python pacman.py -l tinyHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=7,food_energy_level=2,heuristic=hungerGamesManhattanAndStepsOutsideRectangleHeuristic
@@ -11,7 +11,7 @@ python pacman.py -l tinyHungerGames -z .5 -p SearchAgent -a fn=astar,prob=Hunger
 # small layout:
 python pacman.py -l smallHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=10,food_energy_level=3,heuristic=hungerGamesEuclideanHeuristic
 python pacman.py -l smallHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=10,food_energy_level=3,heuristic=hungerGamesManhattanHeuristic
-python pacman.py -l smallHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=10,food_energy_level=3,heuristic=hungerGamesManhattan2MaxFoodOnShortestPathHeuristic
+python pacman.py -l smallHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=10,food_energy_level=3,heuristic=hungerGamesManhattanAndMaxFoodOnShortestPathHeuristic
 python pacman.py -l smallHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=10,food_energy_level=3,heuristic=hungerGamesManhattanShortestPathVerificationHeuristic
 python pacman.py -l smallHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=10,food_energy_level=3,heuristic=hungerGamesManhattanShortestPathWith1WrongStepVerificationHeuristic
 python pacman.py -l smallHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=10,food_energy_level=3,heuristic=hungerGamesManhattanAndStepsOutsideRectangleHeuristic
@@ -21,7 +21,7 @@ python pacman.py -l smallHungerGames -z .5 -p SearchAgent -a fn=astar,prob=Hunge
 # medium layout:
 python pacman.py -l mediumHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=12,food_energy_level=4,heuristic=hungerGamesEuclideanHeuristic
 python pacman.py -l mediumHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=12,food_energy_level=4,heuristic=hungerGamesManhattanHeuristic
-python pacman.py -l mediumHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=12,food_energy_level=4,heuristic=hungerGamesManhattan2MaxFoodOnShortestPathHeuristic
+python pacman.py -l mediumHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=12,food_energy_level=4,heuristic=hungerGamesManhattanAndMaxFoodOnShortestPathHeuristic
 python pacman.py -l mediumHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=12,food_energy_level=4,heuristic=hungerGamesManhattanShortestPathVerificationHeuristic
 python pacman.py -l mediumHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=12,food_energy_level=4,heuristic=hungerGamesManhattanShortestPathWith1WrongStepVerificationHeuristic
 python pacman.py -l mediumHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=12,food_energy_level=4,heuristic=hungerGamesManhattanAndStepsOutsideRectangleHeuristic
@@ -31,7 +31,7 @@ python pacman.py -l mediumHungerGames -z .5 -p SearchAgent -a fn=astar,prob=Hung
 # large layout:
 python pacman.py -l largeHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=5,food_energy_level=5,heuristic=hungerGamesEuclideanHeuristic
 python pacman.py -l largeHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=5,food_energy_level=5,heuristic=hungerGamesManhattanHeuristic
-python pacman.py -l largeHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=5,food_energy_level=5,heuristic=hungerGamesManhattan2MaxFoodOnShortestPathHeuristic
+python pacman.py -l largeHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=5,food_energy_level=5,heuristic=hungerGamesManhattanAndMaxFoodOnShortestPathHeuristic
 python pacman.py -l largeHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=5,food_energy_level=5,heuristic=hungerGamesManhattanShortestPathVerificationHeuristic
 python pacman.py -l largeHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=5,food_energy_level=5,heuristic=hungerGamesManhattanShortestPathWith1WrongStepVerificationHeuristic
 python pacman.py -l largeHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=5,food_energy_level=5,heuristic=hungerGamesManhattanAndStepsOutsideRectangleHeuristic
@@ -41,7 +41,7 @@ python pacman.py -l largeHungerGames -z .5 -p SearchAgent -a fn=astar,prob=Hunge
 # dense layout:
 python pacman.py -l denseHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=5,food_energy_level=1,heuristic=hungerGamesEuclideanHeuristic
 python pacman.py -l denseHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=5,food_energy_level=1,heuristic=hungerGamesManhattanHeuristic
-python pacman.py -l denseHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=5,food_energy_level=1,heuristic=hungerGamesManhattan2MaxFoodOnShortestPathHeuristic
+python pacman.py -l denseHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=5,food_energy_level=1,heuristic=hungerGamesManhattanAndMaxFoodOnShortestPathHeuristic
 python pacman.py -l denseHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=5,food_energy_level=1,heuristic=hungerGamesManhattanShortestPathVerificationHeuristic
 python pacman.py -l denseHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=5,food_energy_level=1,heuristic=hungerGamesManhattanShortestPathWith1WrongStepVerificationHeuristic
 python pacman.py -l denseHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=5,food_energy_level=1,heuristic=hungerGamesManhattanAndStepsOutsideRectangleHeuristic
@@ -51,7 +51,7 @@ python pacman.py -l denseHungerGames -z .5 -p SearchAgent -a fn=astar,prob=Hunge
 # sparse layout:
 python pacman.py -l sparseHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=12,food_energy_level=4,heuristic=hungerGamesEuclideanHeuristic
 python pacman.py -l sparseHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=12,food_energy_level=4,heuristic=hungerGamesManhattanHeuristic
-python pacman.py -l sparseHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=12,food_energy_level=4,heuristic=hungerGamesManhattan2MaxFoodOnShortestPathHeuristic
+python pacman.py -l sparseHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=12,food_energy_level=4,heuristic=hungerGamesManhattanAndMaxFoodOnShortestPathHeuristic
 python pacman.py -l sparseHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=12,food_energy_level=4,heuristic=hungerGamesManhattanShortestPathVerificationHeuristic
 python pacman.py -l sparseHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=12,food_energy_level=4,heuristic=hungerGamesManhattanShortestPathWith1WrongStepVerificationHeuristic
 python pacman.py -l sparseHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=12,food_energy_level=4,heuristic=hungerGamesManhattanAndStepsOutsideRectangleHeuristic
@@ -61,7 +61,7 @@ python pacman.py -l sparseHungerGames -z .5 -p SearchAgent -a fn=astar,prob=Hung
 # diagonal layout:
 python pacman.py -l diagonalHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=5,food_energy_level=2,heuristic=hungerGamesEuclideanHeuristic
 python pacman.py -l diagonalHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=5,food_energy_level=2,heuristic=hungerGamesManhattanHeuristic
-python pacman.py -l diagonalHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=5,food_energy_level=2,heuristic=hungerGamesManhattan2MaxFoodOnShortestPathHeuristic
+python pacman.py -l diagonalHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=5,food_energy_level=2,heuristic=hungerGamesManhattanAndMaxFoodOnShortestPathHeuristic
 python pacman.py -l diagonalHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=5,food_energy_level=2,heuristic=hungerGamesManhattanShortestPathVerificationHeuristic
 python pacman.py -l diagonalHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=5,food_energy_level=2,heuristic=hungerGamesManhattanShortestPathWith1WrongStepVerificationHeuristic
 python pacman.py -l diagonalHungerGames -z .5 -p SearchAgent -a fn=astar,prob=HungerGamesSearchProblem,pacman_energy_level=5,food_energy_level=2,heuristic=hungerGamesManhattanAndStepsOutsideRectangleHeuristic
