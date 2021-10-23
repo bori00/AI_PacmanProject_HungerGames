@@ -357,7 +357,11 @@ class HungerGamesSearchProblem(search.SearchProblem):
 
 
 def hungerGamesEuclideanHeuristic(state, problem):
-    """The Euclidean distance heuristic for a HungerGamesSearchProblem"""
+    """
+    The Euclidean distance heuristic for a HungerGamesSearchProblem
+
+    Heuristic identifier in the documentation: A
+    """
     curr_pos = state[0]
     goal = problem.mazeExitPosition
     return ((curr_pos[0] - goal[0]) ** 2 + (curr_pos[1] - goal[1]) ** 2) ** 0.5
@@ -369,13 +373,17 @@ def manhattanDistance(pointA, pointB):
 
 
 def hungerGamesManhattanHeuristic(state, problem):
-    """The Manhattan distance heuristic for a HungerGamesSearchProblem"""
+    """
+    The Manhattan distance heuristic for a HungerGamesSearchProblem
+
+    Heuristic identifier in the documentation: B
+    """
     curr_pos = state[0]
     goal = problem.mazeExitPosition
     return manhattanDistance(curr_pos, goal)
 
 
-def isPosInRectange(corner1, corner2, pos):
+def isPosInRectangle(corner1, corner2, pos):
     """
     Returns True if (x, y) position is located inside the rectangle defined by the two corners,
     which are on one of the diagonals.
@@ -397,7 +405,7 @@ def noFoodDotsInRectange(corner1, corner2, food_grid):
     corner1, corner2: 2 tuples in the format (x coordinate, y coordinate),
                       marking the two diagonal corners of the rectangle in concern.
     """
-    return len([food_dot for food_dot in food_grid.asList() if isPosInRectange(corner1, corner2, food_dot)])
+    return len([food_dot for food_dot in food_grid.asList() if isPosInRectangle(corner1, corner2, food_dot)])
 
 
 def buildGoalOrientedIntegerFoodGridRectangle(start_corner_pos, goal_corner_pos, food_grid):
@@ -424,7 +432,7 @@ def buildGoalOrientedIntegerFoodGridRectangle(start_corner_pos, goal_corner_pos,
     return res
 
 
-def hungerGamesManhattan2MaxFoodOnShortestPathHeuristic(state, problem):
+def hungerGamesManhattanAndMaxFoodOnShortestPathHeuristic(state, problem):
     """
     A heuristic for the HungerGamesSearchProblem, based on the following idea:
     - any path from the current state to the goal takes at least manhattan distance steps
@@ -448,7 +456,8 @@ def hungerGamesManhattan2MaxFoodOnShortestPathHeuristic(state, problem):
     max no. food dots to (x, y) = max(max no. food dots to (x-1, y), max no. food dots to (x, y-1)) +
                                  + no. food dots on position (x, y)
     Please refer to the documentation for more information.
-    TODO: link to documentation/...
+
+    Heuristic identifier in the documentation: D
     """
     curr_pos = state[0]
     energy_level = state[1]
@@ -550,7 +559,8 @@ def hungerGamesManhattanShortestPathVerificationHeuristic(state, problem):
     To verify whether a path with the above characteristics exists, a dynamic programming approach is used,
     as explained in buildMaxEnergyLevelGrid.
     Please refer to the documentation for more information.
-    TODO: link to documentation/...
+
+    Heuristic identifier in the documentation: E
     """
     curr_pos = state[0]
     energy_level = state[1]
@@ -575,11 +585,11 @@ def buildMinEnergyLevelGrid(food_grid, food_energy_level):
     """
     Given
     - the energy level given by a food dot (food_energy_level)
-    - the food_grid with the maze exit situated in the (n-1, m-1) location,
+    - the food_grid with the maze exit situated in the (n-2, m-2) location,
     where n and m give the height and the width of the grid
     Computes the minimum energy level which PacMan must have when reaching location (x, y) of the grid,
-    starting from location (0, 0), such that a valid, minimum cost (=manhattan distance((x, y), goal) path to the goal,
-    according to the rules of HungerGames, still exists.
+    such that a valid, minimum cost (=manhattan distance((x, y), goal) path to the goal (n-2, m-2),
+    according to the rules of HungerGames, exists.
 
     Returns a matrix with the values for all (x, y) locations (of the same size as food_grid).
 
@@ -591,7 +601,6 @@ def buildMinEnergyLevelGrid(food_grid, food_energy_level):
                           - the energy given by the food dots on location (x, y)
                           + 1
     Where +1 is due to the cost of stepping from (x, y) to (x, y+1) or to (x+1, y).
-    TODO: update, since resolving bug
     """
     # assumes minimum 3 rows and 3 columns in the grid
     no_rows = len(food_grid)
@@ -684,16 +693,15 @@ def hungerGamesManhattanShortestPathWith1WrongStepVerificationHeuristic(state, p
     reachable from (a, b) through a minimum-cost path (only steps in the correct direction)
     See buildMinEnergyLevelGrid.
     Thus,
-    1. if the maximum possible energy level at the goal is >= 0, then a path with only correct steps exists
+    1. if the maximum possible energy level at the goal is >= 0, then and only then a path with only correct steps exists
     --> cost = manhattan distance
     2. if there is (x, y) and (a, b) such that they are neighboring positions, (a, b) is at one wrong step from
-    (x, y), and the maximum energy at (x, y) - 1 >= the minimum required energy at (a, b), then it is sure, that a path
-    with just one wrong step and its annulment exists
+    (x, y), and the maximum energy at (x, y) - 1 >= the minimum required energy at (a, b), then (and only then)
+    it is sure, that a path with just one wrong step and its annulment exists
     --> cost = manhattan distance + 2
     3. otherwise. cost >= manhattan distance + 4
 
-    TODO: update, since resolving bug
-    TODO: link to the documentation
+    Heuristic identifier in the documentation: F
     """
     curr_pos = state[0]
     energy_level = state[1]
@@ -751,7 +759,10 @@ def hungerGamesManhattanShortestPathWith1WrongStepVerificationHeuristic(state, p
 
 
 def hungerGamesManhattanAndStepsOutsideRectangleHeuristic(state, problem=None):
-    # TODO: link to the documentation
+    # TODO: Bea --> documentation
+    """
+    Heuristic identifier in the documentation: C
+    """
     (curr_position, curr_energy_level, food_grid) = state
     goal = problem.mazeExitPosition
 
@@ -813,7 +824,8 @@ def hungerGamesClosestFoodDotReachableHeuristic(state, problem):
     position of PacMan with the current energy level.
 
     If yes, the heuristic returns 0, otherwise infinity (or a very large value, specified in the problem definition).
-    TODO: link to the documentation
+
+    Heuristic identifier in the documentation: G
     """
     (curr_position, curr_energy_level, food_grid) = state
     goal = problem.mazeExitPosition
@@ -842,8 +854,7 @@ def hungerGamesCombinedHeuristic(state, problem):
     a path with manhattan distance steps is assumed, then
     hungerGamesManhattanAndStepsOutsideRectangleHeuristic(state, problem) is returned.
 
-    TODO: prove consistency!!!! seems obvious with hungerGamesManhattanShortestPathVerificationHeuristic, but not here
-    TODO: link to the documentation
+    Heuristic identifier in the documentation: H
     """
     (curr_position, curr_energy_level, food_grid) = state
     goal = problem.mazeExitPosition
