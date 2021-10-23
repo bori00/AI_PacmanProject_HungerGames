@@ -179,10 +179,20 @@ def square(pos, r, color, filled=1, behind=0):
     coords = [(x - r, y - r), (x + r, y - r), (x + r, y + r), (x - r, y + r)]
     return polygon(coords, color, color, filled, 0, behind=behind)
 
-def rectangle(pos, rx, ry, outlineColor, fillColor, filled=1, behind=0, width = 1):
+
+"""===================START OF CODE MODIFIED BY ME============="""
+
+
+def rectangle(pos, rx, ry, outlineColor, fillColor, filled=1,
+              behind=0, width=1):
     x, y = pos
-    coords = [(x - rx, y - ry), (x + rx, y - ry), (x + rx, y + ry), (x - rx, y + ry)]
-    return polygon(coords, outlineColor, fillColor, filled, 0, behind=behind, width=width)
+    coords = [(x - rx, y - ry), (x + rx, y - ry), (x + rx, y + ry),
+              (x - rx, y + ry)]
+    return polygon(coords, outlineColor, fillColor, filled, 0,
+                   behind=behind, width=width)
+
+
+"""===================END OF CODE MODIFIED BY ME============="""
 
 def circle(pos, r, outlineColor, fillColor, endpoints=None, style='pieslice', width=2):
     x, y = pos

@@ -368,24 +368,42 @@ class Actions:
         return (x + dx, y + dy)
     getSuccessor = staticmethod(getSuccessor)
 
+
+"""===================START OF CODE MODIFIED BY ME============="""
+
+
 class GameStateData:
     """
-
+    Added additional attributes to the GameState, which help us
+    monitor the energy level of PacMan.
+    - pacmanEnergyLevel = current energy level of PacMan at a given
+    step in the game
+    - initialEnergyLevel = initial energy level of PacMan at the
+    start of the game
+    - foodEnergyLevel = the gain in energy obtained from eating a
+    food-dot
     """
-    def __init__( self, prevState = None ):
+
+    def __init__(self, prevState=None):
         """
-        Generates a new data packet by copying information from its predecessor.
+        Generates a new data packet by copying information from its
+        predecessor.
         """
         if prevState != None:
             self.food = prevState.food.shallowCopy()
             self.capsules = prevState.capsules[:]
-            self.agentStates = self.copyAgentStates( prevState.agentStates )
+            self.agentStates = self.copyAgentStates(
+                prevState.agentStates)
             self.layout = prevState.layout
             self._eaten = prevState._eaten
             self.score = prevState.score
+            """==================START OF MY OWN CODE=============="""
+
             self.pacmanEnergyLevel = prevState.pacmanEnergyLevel
             self.initialEnergyLevel = prevState.initialEnergyLevel
             self.foodEnergyLevel = prevState.foodEnergyLevel
+
+            """==================END OF MY OWN CODE================"""
 
         self._foodEaten = None
         self._foodAdded = None
@@ -395,26 +413,30 @@ class GameStateData:
         self._win = False
         self.scoreChange = 0
 
-    def deepCopy( self ):
-        state = GameStateData( self )
+    def deepCopy(self):
+        state = GameStateData(self)
         state.food = self.food.deepCopy()
         state.layout = self.layout.deepCopy()
+        """==================START OF MY OWN CODE=================="""
+
         state.pacmanEnergyLevel = self.pacmanEnergyLevel
         state.initialEnergyLevel = self.initialEnergyLevel
         state.foodEnergyLevel = self.foodEnergyLevel
+
+        """==================END OF MY OWN CODE===================="""
         state._agentMoved = self._agentMoved
         state._foodEaten = self._foodEaten
         state._foodAdded = self._foodAdded
         state._capsuleEaten = self._capsuleEaten
         return state
 
-    def copyAgentStates( self, agentStates ):
+    def copyAgentStates(self, agentStates):
         copiedStates = []
         for agentState in agentStates:
-            copiedStates.append( agentState.copy() )
+            copiedStates.append(agentState.copy())
         return copiedStates
 
-    def __eq__( self, other ):
+    def __eq__(self, other):
         """
         Allows two states to be compared.
         """
@@ -424,9 +446,16 @@ class GameStateData:
         if not self.food == other.food: return False
         if not self.capsules == other.capsules: return False
         if not self.score == other.score: return False
-        if not self.initialEnergyLevel == other.initialnergyLevel: return False
-        if not self.pacmanEnergyLevel == other.pacmanEnergyLevel: return False
-        if not self.foodEnergyLevel == other.foodEnergyLevel: return False
+        """==================START OF MY OWN CODE=================="""
+
+        if not self.initialEnergyLevel == other.initialnergyLevel:
+            return False
+        if not self.pacmanEnergyLevel == other.pacmanEnergyLevel:
+            return False
+        if not self.foodEnergyLevel == other.foodEnergyLevel:
+            return False
+
+        """==================END OF MY OWN CODE===================="""
         return True
 
     def __hash__( self ):
@@ -493,38 +522,55 @@ class GameStateData:
             return '3'
         return 'E'
 
-    def initialize( self, layout, numGhostAgents , pacmanEnergyLevel, foodEnergyLevel):
+    """===================START OF CODE MODIFIED BY ME============="""
+    def initialize(self, layout, numGhostAgents, pacmanEnergyLevel,
+                   foodEnergyLevel):
         """
-        Creates an initial game state from a layout array (see layout.py).
-        It also initializes the additional variables which monitor the relevant energy levels:
+        Creates an initial game state from a layout array (see
+        layout.py).
 
-        pacmanEnergyLevel = the current energy level of PacMan which is updated after every move
-        initialEnergyLevel = the initial energy level passed as a command line argument when running the program;
-                            it is needed as reference to visualize the remaining energy level with the energy level
+        It also initializes the additional variables which monitor
+        the relevant energy levels:
+
+        pacmanEnergyLevel = the current energy level of PacMan
+        which is updated after every move
+        initialEnergyLevel = the initial energy level passed as a
+        command line argument when running the program;
+                            it is needed as reference to visualize
+                            the remaining energy level with the
+                            energy level
                             indicator bar on the right of the frame.
-        foodEnergyLevel = the gain in energy when PacMan eats a food dot; also initialized by a program argument,
-                            and its value remains the same throughout the game
+        foodEnergyLevel = the gain in energy when PacMan eats a
+        food dot; also initialized by a program argument,
+                            and its value remains the same
+                            throughout the game
         """
         self.food = layout.food.copy()
-        #self.capsules = []
+        # self.capsules = []
         self.capsules = layout.capsules[:]
         self.layout = layout
         self.score = 0
         self.scoreChange = 0
+        """==================START OF MY OWN CODE============="""
 
         self.initialEnergyLevel = pacmanEnergyLevel
         self.pacmanEnergyLevel = pacmanEnergyLevel
         self.foodEnergyLevel = foodEnergyLevel
 
+        """===================END OF MY OWN CODE=============="""
         self.agentStates = []
         numGhosts = 0
         for isPacman, pos in layout.agentPositions:
             if not isPacman:
-                if numGhosts == numGhostAgents: continue # Max ghosts reached already
-                else: numGhosts += 1
-            self.agentStates.append( AgentState( Configuration( pos, Directions.STOP), isPacman) )
+                if numGhosts == numGhostAgents:
+                    continue  # Max ghosts reached already
+                else:
+                    numGhosts += 1
+            self.agentStates.append(
+                AgentState(Configuration(pos, Directions.STOP),
+                           isPacman))
         self._eaten = [False for a in self.agentStates]
-
+    """===================END OF CODE MODIFIED BY ME============="""
 try:
     import boinc
     _BOINC_ENABLED = True

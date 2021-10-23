@@ -38,12 +38,6 @@ SCORE_COLOR = formatColor(.9, .9, .9)
 PACMAN_OUTLINE_WIDTH = 2
 PACMAN_CAPTURE_OUTLINE_WIDTH = 4
 
-HIGH_ENERGY_COLOR = formatColor(.0, .9, .9)
-MEDIUM_ENERGY_COLOR = formatColor(1.0, 0.6, 0.0)
-LOW_ENERGY_COLOR = formatColor(.98, .41, .07)
-CRITICAL_ENERGY_COLOR = formatColor(.9, 0, 0)
-ENERGY_BAR_OUTLINE_COLOR = formatColor(.99, .99, .99)
-
 GHOST_COLORS = []
 GHOST_COLORS.append(formatColor(.9, 0, 0))  # Red
 GHOST_COLORS.append(formatColor(0, .3, .9))  # Blue
@@ -78,9 +72,16 @@ LASER_SIZE = 0.02
 CAPSULE_COLOR = formatColor(1, 1, 1)
 CAPSULE_SIZE = 0.25
 
+"""======================START OF MY OWN CODE======================"""
+HIGH_ENERGY_COLOR = formatColor(.0, .9, .9)
+MEDIUM_ENERGY_COLOR = formatColor(1.0, 0.6, 0.0)
+LOW_ENERGY_COLOR = formatColor(.98, .41, .07)
+CRITICAL_ENERGY_COLOR = formatColor(.9, 0, 0)
+ENERGY_BAR_OUTLINE_COLOR = formatColor(.99, .99, .99)
 # Exit-door graphics
 MAZE_EXIT_COLOR = formatColor(0, 1, 1)
 MAZE_EXIT_SIZE = 0.5
+"""=====================END OF MY OWN CODE========================="""
 
 # Drawing walls
 WALL_RADIUS = 0.15
@@ -278,7 +279,10 @@ class PacmanGraphics:
         self.drawWalls(layout.walls)
         self.food = self.drawFood(layout.food)
         self.capsules = self.drawCapsules(layout.capsules)
+        """=================START OF MY OWN CODE==================="""
         self.mazeExit = self.drawMazeExit(layout.mazeExit)
+        """==================END OF MY OWN CODE===================="""
+
         refresh()
 
     def drawAgentObjects(self, state):
