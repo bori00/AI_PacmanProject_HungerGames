@@ -72,7 +72,7 @@ LASER_SIZE = 0.02
 CAPSULE_COLOR = formatColor(1, 1, 1)
 CAPSULE_SIZE = 0.25
 
-"""======================START OF MY OWN CODE======================"""
+"""======================START OF OUR OWN CODE======================"""
 HIGH_ENERGY_COLOR = formatColor(.0, .9, .9)
 MEDIUM_ENERGY_COLOR = formatColor(1.0, 0.6, 0.0)
 LOW_ENERGY_COLOR = formatColor(.98, .41, .07)
@@ -81,7 +81,7 @@ ENERGY_BAR_OUTLINE_COLOR = formatColor(.99, .99, .99)
 # Exit-door graphics
 MAZE_EXIT_COLOR = formatColor(0, 1, 1)
 MAZE_EXIT_SIZE = 0.5
-"""=====================END OF MY OWN CODE========================="""
+"""=====================END OF OUR OWN CODE========================="""
 
 # Drawing walls
 WALL_RADIUS = 0.15
@@ -112,7 +112,7 @@ class InfoPane:
         y = self.base + y
         return x, y
 
-    """==================START OF MY OWN CODE======================"""
+    """==================START OF OUR OWN CODE======================"""
 
     def drawPane(self, energyLevel):
         self.energyLevelText = text(self.toScreen(0, 0),
@@ -171,7 +171,7 @@ class InfoPane:
             changeColor(self.energyLevelBars[3], BACKGROUND_COLOR)
             changeColor(self.energyLevelText, CRITICAL_ENERGY_COLOR)
 
-    """====================END OF MY OWN CODE======================"""
+    """====================END OF OUR OWN CODE======================"""
 
     def initializeGhostDistances(self, distances):
         self.ghostDistanceText = []
@@ -279,9 +279,9 @@ class PacmanGraphics:
         self.drawWalls(layout.walls)
         self.food = self.drawFood(layout.food)
         self.capsules = self.drawCapsules(layout.capsules)
-        """=================START OF MY OWN CODE==================="""
+        """=================START OF OUR OWN CODE==================="""
         self.mazeExit = self.drawMazeExit(layout.mazeExit)
-        """==================END OF MY OWN CODE===================="""
+        """==================END OF OUR OWN CODE===================="""
 
         refresh()
 
@@ -788,7 +788,7 @@ class PacmanGraphics:
             capsuleImages[capsule] = dot
         return capsuleImages
 
-    """==================START OF MY OWN CODE======================"""
+    """==================START OF OUR OWN CODE======================"""
 
     def drawMazeExit(self, exit_pos):
         (screen_x, screen_y) = self.to_screen(exit_pos)
@@ -803,7 +803,7 @@ class PacmanGraphics:
         imageParts.append(innerSquare)
         return imageParts
 
-    """====================END OF MY OWN CODE======================"""
+    """====================END OF OUR OWN CODE======================"""
 
     def removeFood(self, cell, foodImages):
         x, y = cell

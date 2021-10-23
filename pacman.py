@@ -53,10 +53,10 @@ import sys, types, time, random, os
 # YOUR INTERFACE TO THE PACMAN WORLD: A GameState #
 ###################################################
 
-"""=========================START OF MY OWN CODE==================="""
+"""=========================START OF OUR OWN CODE==================="""
 DEFAULT_INITIAL_PACMAN_ENERGY_LEVEL = 10
 DEFAULT_FOOD_ENERGY_LEVEL = 3
-"""=========================START OF MY OWN CODE==================="""
+"""=========================START OF OUR OWN CODE==================="""
 
 class GameState:
     """
@@ -378,10 +378,10 @@ class PacmanRules:
         vector = Actions.directionToVector(action, PacmanRules.PACMAN_SPEED)
         pacmanState.configuration = pacmanState.configuration.generateSuccessor(vector)
 
-        """==================START OF MY OWN CODE=================="""
+        """==================START OF OUR OWN CODE=================="""
         # Decrement energy after every move (action)
         state.data.pacmanEnergyLevel -= 1
-        """====================END OF MY OWN CODE=================="""
+        """====================END OF OUR OWN CODE=================="""
         # Eat
         next = pacmanState.configuration.getPosition()
         nearest = nearestPoint(next)
@@ -396,11 +396,11 @@ class PacmanRules:
         # Eat food
         if state.data.food[x][y]:
             state.data.scoreChange += 10
-            """===============START OF MY OWN CODE================="""
+            """===============START OF OUR OWN CODE================="""
 
             state.data.pacmanEnergyLevel += state.data.foodEnergyLevel
 
-            """================END OF MY OWN CODE=================="""
+            """================END OF OUR OWN CODE=================="""
             state.data.food = state.data.food.copy()
             state.data.food[x][y] = False
             state.data._foodEaten = position
@@ -634,7 +634,7 @@ def readCommand(argv):
         if 'numTraining' not in agentOpts: agentOpts[
             'numTraining'] = options.numTraining
 
-    """=======================START OF MY OWN CODE================="""
+    """=======================START OF OUR OWN CODE================="""
 
     if 'prob' in agentOpts and agentOpts[
         'prob'] == 'HungerGamesSearchProblem':
@@ -645,7 +645,7 @@ def readCommand(argv):
             args['foodEnergyLevel'] = int(
                 agentOpts['food_energy_level'])
 
-    """=========================END OF MY OWN CODE================="""
+    """=========================END OF OUR OWN CODE================="""
 
     pacman = pacmanType(
         **agentOpts)  # Instantiate Pacman with agentArgs

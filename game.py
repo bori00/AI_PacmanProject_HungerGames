@@ -397,13 +397,13 @@ class GameStateData:
             self.layout = prevState.layout
             self._eaten = prevState._eaten
             self.score = prevState.score
-            """==================START OF MY OWN CODE=============="""
+            """==================START OF OUR OWN CODE=============="""
 
             self.pacmanEnergyLevel = prevState.pacmanEnergyLevel
             self.initialEnergyLevel = prevState.initialEnergyLevel
             self.foodEnergyLevel = prevState.foodEnergyLevel
 
-            """==================END OF MY OWN CODE================"""
+            """==================END OF OUR OWN CODE================"""
 
         self._foodEaten = None
         self._foodAdded = None
@@ -417,13 +417,13 @@ class GameStateData:
         state = GameStateData(self)
         state.food = self.food.deepCopy()
         state.layout = self.layout.deepCopy()
-        """==================START OF MY OWN CODE=================="""
+        """==================START OF OUR OWN CODE=================="""
 
         state.pacmanEnergyLevel = self.pacmanEnergyLevel
         state.initialEnergyLevel = self.initialEnergyLevel
         state.foodEnergyLevel = self.foodEnergyLevel
 
-        """==================END OF MY OWN CODE===================="""
+        """==================END OF OUR OWN CODE===================="""
         state._agentMoved = self._agentMoved
         state._foodEaten = self._foodEaten
         state._foodAdded = self._foodAdded
@@ -446,7 +446,7 @@ class GameStateData:
         if not self.food == other.food: return False
         if not self.capsules == other.capsules: return False
         if not self.score == other.score: return False
-        """==================START OF MY OWN CODE=================="""
+        """==================START OF OUR OWN CODE=================="""
 
         if not self.initialEnergyLevel == other.initialnergyLevel:
             return False
@@ -455,7 +455,7 @@ class GameStateData:
         if not self.foodEnergyLevel == other.foodEnergyLevel:
             return False
 
-        """==================END OF MY OWN CODE===================="""
+        """==================END OF OUR OWN CODE===================="""
         return True
 
     def __hash__( self ):
@@ -551,13 +551,13 @@ class GameStateData:
         self.layout = layout
         self.score = 0
         self.scoreChange = 0
-        """==================START OF MY OWN CODE============="""
+        """==================START OF OUR OWN CODE============="""
 
         self.initialEnergyLevel = pacmanEnergyLevel
         self.pacmanEnergyLevel = pacmanEnergyLevel
         self.foodEnergyLevel = foodEnergyLevel
 
-        """===================END OF MY OWN CODE=============="""
+        """===================END OF OUR OWN CODE=============="""
         self.agentStates = []
         numGhosts = 0
         for isPacman, pos in layout.agentPositions:

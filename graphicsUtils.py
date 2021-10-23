@@ -180,7 +180,7 @@ def square(pos, r, color, filled=1, behind=0):
     return polygon(coords, color, color, filled, 0, behind=behind)
 
 
-"""===================START OF CODE MODIFIED BY ME============="""
+"""===================START OF CODE MODIFIED BY US============="""
 
 
 def rectangle(pos, rx, ry, outlineColor, fillColor, filled=1,
@@ -192,7 +192,7 @@ def rectangle(pos, rx, ry, outlineColor, fillColor, filled=1,
                    behind=behind, width=width)
 
 
-"""===================END OF CODE MODIFIED BY ME============="""
+"""===================END OF CODE MODIFIED BY US============="""
 
 def circle(pos, r, outlineColor, fillColor, endpoints=None, style='pieslice', width=2):
     x, y = pos
