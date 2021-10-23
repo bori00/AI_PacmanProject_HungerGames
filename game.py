@@ -496,6 +496,14 @@ class GameStateData:
     def initialize( self, layout, numGhostAgents , pacmanEnergyLevel, foodEnergyLevel):
         """
         Creates an initial game state from a layout array (see layout.py).
+        It also initializes the additional variables which monitor the relevant energy levels:
+
+        pacmanEnergyLevel = the current energy level of PacMan which is updated after every move
+        initialEnergyLevel = the initial energy level passed as a command line argument when running the program;
+                            it is needed as reference to visualize the remaining energy level with the energy level
+                            indicator bar on the right of the frame.
+        foodEnergyLevel = the gain in energy when PacMan eats a food dot; also initialized by a program argument,
+                            and its value remains the same throughout the game
         """
         self.food = layout.food.copy()
         #self.capsules = []
@@ -503,6 +511,7 @@ class GameStateData:
         self.layout = layout
         self.score = 0
         self.scoreChange = 0
+
         self.initialEnergyLevel = pacmanEnergyLevel
         self.pacmanEnergyLevel = pacmanEnergyLevel
         self.foodEnergyLevel = foodEnergyLevel
